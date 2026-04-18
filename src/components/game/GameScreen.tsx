@@ -206,7 +206,7 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
 
           // Check if all letters revealed
           if (allRevealed) {
-            setTimeout(() => winRound(gameState.currentPlayerIndex), 800);
+            setTimeout(() => winRound(gameState.currentPlayerIndex), 5000);
           }
         } else {
           playBuzzerSound();
@@ -284,7 +284,7 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
 
           // Check if all letters revealed
           if (allRevealed) {
-            setTimeout(() => winRound(gameState.currentPlayerIndex), 800);
+            setTimeout(() => winRound(gameState.currentPlayerIndex), 5000);
           }
         } else {
           playBuzzerSound();
@@ -369,7 +369,7 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
           };
         });
 
-        setTimeout(() => winRound(gameState.currentPlayerIndex), 1200);
+        setTimeout(() => winRound(gameState.currentPlayerIndex), 5000);
       } else {
         playBuzzerSound();
         setGameState(prev => {

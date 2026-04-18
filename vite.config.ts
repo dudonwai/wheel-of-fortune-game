@@ -18,9 +18,7 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import tailwindcss from "@tailwindcss/vite";
 import path from "path";
-import { pilot } from "@palantir/pilot-vite-plugin";
 import { fileURLToPath } from "url";
-import { ontologyDefinition } from "./ontology/ontology";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -28,15 +26,10 @@ const __dirname = path.dirname(__filename);
 // https://vitejs.dev/config/
 export default defineConfig(() => ({
   plugins: [
-    pilot({
-      ontology: ontologyDefinition,
-      ontologyDir: path.join(__dirname, "ontology"),
-      sdkDir: path.join(__dirname, ".osdk", "src"),
-    }),
     react(),
     tailwindcss(),
   ],
-  base: process.env.DEV_SERVER_BASE_PATH,
+  base: process.env.DEV_SERVER_BASE_PATH || "",
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

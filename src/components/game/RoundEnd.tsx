@@ -52,7 +52,7 @@ export function RoundEnd({ winner, phrase, players, onNewRound, onEndGame }: Rou
                 fontFamily: "Oswald, sans-serif",
                 fontSize: 56,
                 fontWeight: 700,
-                color: "#F5C518",
+                color: winner.color,
                 textTransform: "uppercase",
                 letterSpacing: "0.04em",
                 lineHeight: 1.1,
@@ -122,20 +122,31 @@ export function RoundEnd({ winner, phrase, players, onNewRound, onEndGame }: Rou
                 key={player.id}
                 className="flex items-center justify-between px-4 py-3 rounded"
                 style={{
-                  backgroundColor: "rgba(255,255,255,0.05)",
-                  border: "1px solid rgba(255,255,255,0.08)",
+                  backgroundColor: `${player.color}11`,
+                  border: `1px solid ${player.color}33`,
                 }}
               >
                 <span
+                  className="flex items-center gap-2"
                   style={{
                     fontFamily: "Oswald, sans-serif",
                     fontSize: 22,
                     fontWeight: 700,
-                    color: "#FFFFFF",
+                    color: player.color,
                     textTransform: "uppercase",
                     letterSpacing: "0.04em",
                   }}
                 >
+                  <span
+                    style={{
+                      width: 10,
+                      height: 10,
+                      borderRadius: "50%",
+                      backgroundColor: player.color,
+                      display: "inline-block",
+                      flexShrink: 0,
+                    }}
+                  />
                   {player.name}
                 </span>
                 <span
@@ -143,7 +154,7 @@ export function RoundEnd({ winner, phrase, players, onNewRound, onEndGame }: Rou
                     fontFamily: "Oswald, sans-serif",
                     fontSize: 28,
                     fontWeight: 700,
-                    color: "#F5C518",
+                    color: "#FFFFFF",
                   }}
                 >
                   ${player.totalScore.toLocaleString()}

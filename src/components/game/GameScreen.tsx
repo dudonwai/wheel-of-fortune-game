@@ -415,22 +415,7 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
 
       {/* Main area */}
       <div className="flex-1 flex min-h-0">
-        {/* Left: Wheel + Event Feed (22%) */}
-        <div className="flex flex-col" style={{ width: "22%", padding: "24px 16px", boxSizing: "border-box", gap: 16 }}>
-          <div className="flex items-center justify-center" style={{ flexShrink: 0 }}>
-            <Wheel
-              onSpinComplete={handleSpinComplete}
-              spinning={spinning}
-              onSpinStart={handleSpinStart}
-              disabled={!canSpin}
-            />
-          </div>
-          <div className="flex-1 min-h-0">
-            <EventFeed events={gameState.feedEvents} />
-          </div>
-        </div>
-
-        {/* Center: Puzzle Board (50-60%) */}
+        {/* Left/Center: Puzzle Board (full remaining space) */}
         <div className="flex-1 flex flex-col items-center justify-center" style={{ padding: "32px 24px" }}>
           <PuzzleBoard
             phrase={gameState.phrase}
@@ -440,24 +425,44 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
           />
         </div>
 
-        {/* Right: Host Controls (20%) */}
+        {/* Right panel: Wheel + Event Feed + Host Controls (~24%) */}
         <div
-          className="flex flex-col"
+          className="flex flex-col min-h-0"
           style={{
-            width: "22%",
+            width: "24%",
+            minWidth: 240,
             borderLeft: "1px solid rgba(255,255,255,0.06)",
+            overflow: "hidden",
           }}
         >
-          <HostControls
-            gameState={gameState}
-            onLetterClick={handleLetterClick}
-            onBuyVowelToggle={handleBuyVowelToggle}
-            onSolve={handleSolve}
-            onNextPlayer={handleNextPlayer}
-            buyingVowel={buyingVowel}
-            currentSpinResult={gameState.currentSpinResult}
-            turnPhase={gameState.turnPhase}
-          />
+          <div className="flex-1 flex flex-col min-h-0 overflow-y-auto">
+            {/* Wheel */}
+            <div className="flex items-center justify-center" style={{ flexShrink: 0, padding: "12px 12px 8px" }}>
+              <Wheel
+                onSpinComplete={handleSpinComplete}
+                spinning={spinning}
+                onSpinStart={handleSpinStart}
+                disabled={!canSpin}
+              />
+            </div>
+
+            {/* Event Feed */}
+            <div style={{ flexShrink: 0, padding: "0 12px 8px" }}>
+              <EventFeed events={gameState.feedEvents} />
+            </div>
+
+            {/* Host Controls */}
+            <HostControls
+              gameState={gameState}
+              onLetterClick={handleLetterClick}
+              onBuyVowelToggle={handleBuyVowelToggle}
+              onSolve={handleSolve}
+              onNextPlayer={handleNextPlayer}
+              buyingVowel={buyingVowel}
+              currentSpinResult={gameState.currentSpinResult}
+              turnPhase={gameState.turnPhase}
+            />
+          </div>
         </div>
       </div>
 

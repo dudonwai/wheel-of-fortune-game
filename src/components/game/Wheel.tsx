@@ -9,7 +9,7 @@ interface WheelProps {
   disabled: boolean;
 }
 
-const CANVAS_SIZE = 260;
+const CANVAS_SIZE = 190;
 
 function secureRandom(): number {
   const arr = new Uint32Array(1);

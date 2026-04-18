@@ -20,7 +20,6 @@ export function HostControls({
   onSolve,
   onNextPlayer,
   buyingVowel,
-  currentSpinResult,
   turnPhase,
 }: HostControlsProps) {
   const [solveMode, setSolveMode] = useState(false);
@@ -39,45 +38,8 @@ export function HostControls({
     setSolveMode(false);
   };
 
-  const isSpinResultMoney = currentSpinResult && currentSpinResult.type === "money";
-
   return (
-    <div className="flex flex-col gap-3 h-full overflow-y-auto" style={{ padding: "16px 12px" }}>
-      {/* Status message */}
-      <div
-        className="text-center px-3 py-2 rounded"
-        style={{
-          fontFamily: "Archivo, sans-serif",
-          fontSize: 14,
-          fontWeight: 500,
-          color: "#F5C518",
-          backgroundColor: "rgba(245, 197, 24, 0.08)",
-          border: "1px solid rgba(245, 197, 24, 0.15)",
-          minHeight: 40,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        {gameState.message}
-      </div>
-
-      {/* Spin result display */}
-      {currentSpinResult && turnPhase === "guessing" && isSpinResultMoney && (
-        <div
-          className="text-center py-2 rounded"
-          style={{
-            fontFamily: "Oswald, sans-serif",
-            fontSize: 24,
-            fontWeight: 700,
-            color: "#F5C518",
-            letterSpacing: "0.04em",
-          }}
-        >
-          ${currentSpinResult.value} per letter
-        </div>
-      )}
-
+    <div className="flex flex-col gap-3" style={{ padding: "8px 12px 16px" }}>
       {/* Letter board */}
       <LetterBoard
         guessedLetters={gameState.guessedLetters}

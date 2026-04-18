@@ -633,7 +633,7 @@ export function FinalRoundScreen({ gameState, setGameState, onEndGame }: FinalRo
                 <input
                   type="text"
                   value={solveGuess}
-                  onChange={e => setSolveGuess(e.target.value)}
+                  onChange={e => setSolveGuess(e.target.value.toUpperCase())}
                   placeholder="Type the answer..."
                   className="w-full px-3 py-3 rounded"
                   style={{
@@ -642,6 +642,7 @@ export function FinalRoundScreen({ gameState, setGameState, onEndGame }: FinalRo
                     backgroundColor: "rgba(255,255,255,0.1)",
                     color: "#FFFFFF",
                     border: "2px solid rgba(255,255,255,0.2)",
+                    textTransform: "uppercase",
                     outline: "none",
                   }}
                   onKeyDown={e => {

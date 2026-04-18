@@ -101,7 +101,7 @@ export function HostControls({
             <input
               type="text"
               value={solveGuess}
-              onChange={e => setSolveGuess(e.target.value)}
+              onChange={e => setSolveGuess(e.target.value.toUpperCase())}
               placeholder="Type the player's answer..."
               className="w-full px-3 py-2 rounded text-sm"
               style={{
@@ -111,6 +111,7 @@ export function HostControls({
                 color: "#FFFFFF",
                 border: "1px solid rgba(255,255,255,0.2)",
                 outline: "none",
+                textTransform: "uppercase",
               }}
               onKeyDown={e => {
                 if (e.key === "Enter" && solveGuess.trim()) {

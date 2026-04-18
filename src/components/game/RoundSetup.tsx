@@ -92,9 +92,9 @@ export function RoundSetup({ roundNumber, onStartRound, onFullReset, players }: 
             id="round-category"
             type="text"
             value={category}
-            onChange={e => setCategory(e.target.value.slice(0, MAX_CATEGORY))}
+            onChange={e => setCategory(e.target.value.toUpperCase().slice(0, MAX_CATEGORY))}
             maxLength={MAX_CATEGORY}
-            placeholder={'e.g. "Before and After"'}
+            placeholder={'e.g. "BEFORE AND AFTER"'}
             className="w-full px-4 py-3 rounded"
             style={{
               fontFamily: "Archivo, sans-serif",
@@ -104,6 +104,7 @@ export function RoundSetup({ roundNumber, onStartRound, onFullReset, players }: 
               color: "#FFFFFF",
               border: "2px solid rgba(255,255,255,0.1)",
               outline: "none",
+              textTransform: "uppercase",
             }}
           />
           <div
@@ -141,7 +142,7 @@ export function RoundSetup({ roundNumber, onStartRound, onFullReset, players }: 
             id="round-phrase"
             type="text"
             value={phrase}
-            onChange={e => setPhrase(e.target.value.slice(0, MAX_PHRASE))}
+            onChange={e => setPhrase(e.target.value.toUpperCase().slice(0, MAX_PHRASE))}
             maxLength={MAX_PHRASE}
             placeholder={'e.g. "A STITCH IN TIME"'}
             className="w-full px-4 py-3 rounded"
@@ -153,6 +154,7 @@ export function RoundSetup({ roundNumber, onStartRound, onFullReset, players }: 
               color: "#FFFFFF",
               border: "2px solid rgba(255,255,255,0.1)",
               outline: "none",
+              textTransform: "uppercase",
             }}
             onKeyDown={e => {
               if (e.key === "Enter" && canStart) {

@@ -34,7 +34,7 @@ export const Home = () => {
   const handleStartGame = useCallback((playerNames: string[]) => {
     const players = playerNames.map((name, i) => ({
       id: `player-${i}`,
-      name,
+      name: name.toUpperCase(),
       roundScore: 0,
       totalScore: 0,
       color: PLAYER_COLORS[i % PLAYER_COLORS.length],

@@ -164,9 +164,9 @@ export function FinalRoundSetup({ finalist, onStartFinalRound, onCancel }: Final
             id="final-category"
             type="text"
             value={category}
-            onChange={e => setCategory(e.target.value.slice(0, MAX_CATEGORY))}
+            onChange={e => setCategory(e.target.value.toUpperCase().slice(0, MAX_CATEGORY))}
             maxLength={MAX_CATEGORY}
-            placeholder={'e.g. "Thing"'}
+            placeholder={'e.g. "THING"'}
             className="w-full px-4 py-3 rounded"
             style={{
               fontFamily: "Archivo, sans-serif",
@@ -176,6 +176,7 @@ export function FinalRoundSetup({ finalist, onStartFinalRound, onCancel }: Final
               color: "#FFFFFF",
               border: "2px solid rgba(255,255,255,0.1)",
               outline: "none",
+              textTransform: "uppercase",
             }}
           />
           <div
@@ -213,7 +214,7 @@ export function FinalRoundSetup({ finalist, onStartFinalRound, onCancel }: Final
             id="final-phrase"
             type="text"
             value={phrase}
-            onChange={e => setPhrase(e.target.value.slice(0, MAX_PHRASE))}
+            onChange={e => setPhrase(e.target.value.toUpperCase().slice(0, MAX_PHRASE))}
             maxLength={MAX_PHRASE}
             placeholder={'e.g. "KITCHEN TABLE"'}
             className="w-full px-4 py-3 rounded"
@@ -225,6 +226,7 @@ export function FinalRoundSetup({ finalist, onStartFinalRound, onCancel }: Final
               color: "#FFFFFF",
               border: "2px solid rgba(255,255,255,0.1)",
               outline: "none",
+              textTransform: "uppercase",
             }}
             onKeyDown={e => {
               if (e.key === "Enter" && canStart) {

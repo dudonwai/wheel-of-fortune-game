@@ -140,7 +140,7 @@ export function SetupScreen({ onStartGame }: SetupScreenProps) {
                   id={`player-name-${i}`}
                   type="text"
                   value={playerNames[i]}
-                  onChange={e => handleNameChange(i, e.target.value)}
+                  onChange={e => handleNameChange(i, e.target.value.toUpperCase())}
                   placeholder={`Enter player ${i + 1} name`}
                   className="w-full px-4 py-3 rounded"
                   style={{
@@ -151,6 +151,7 @@ export function SetupScreen({ onStartGame }: SetupScreenProps) {
                     color: "#FFFFFF",
                     border: `2px solid ${color}44`,
                     outline: "none",
+                    textTransform: "uppercase",
                   }}
                   onKeyDown={e => {
                     if (e.key === "Enter" && canStart) {

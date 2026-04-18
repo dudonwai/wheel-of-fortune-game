@@ -9,6 +9,8 @@ interface WheelProps {
   disabled: boolean;
 }
 
+const CANVAS_SIZE = 260;
+
 function secureRandom(): number {
   const arr = new Uint32Array(1);
   crypto.getRandomValues(arr);
@@ -170,12 +172,15 @@ export function Wheel({ onSpinComplete, spinning, onSpinStart, disabled }: Wheel
   }, [spinning]);
 
   return (
-    <div className="flex flex-col items-center gap-3">
+    <div
+      className="flex flex-col items-center gap-3"
+      style={{ width: "100%", maxWidth: CANVAS_SIZE + 16, padding: "0 8px", boxSizing: "border-box" }}
+    >
       <canvas
         ref={canvasRef}
-        width={280}
-        height={280}
-        style={{ width: 280, height: 280 }}
+        width={CANVAS_SIZE}
+        height={CANVAS_SIZE}
+        style={{ width: "100%", maxWidth: CANVAS_SIZE, height: "auto", aspectRatio: "1 / 1" }}
         aria-label="Wheel of Fortune spinning wheel"
       />
       <button

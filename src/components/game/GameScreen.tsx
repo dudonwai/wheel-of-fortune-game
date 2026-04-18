@@ -353,7 +353,10 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
       {/* Main area */}
       <div className="flex-1 flex min-h-0">
         {/* Left: Wheel (20%) */}
-        <div className="flex flex-col items-center justify-center" style={{ width: "20%", padding: 16 }}>
+        <div
+          className="flex flex-col items-center justify-center"
+          style={{ width: "22%", padding: "24px 16px", boxSizing: "border-box" }}
+        >
           <Wheel
             onSpinComplete={handleSpinComplete}
             spinning={spinning}

@@ -415,17 +415,31 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
 
       {/* Main area */}
       <div className="flex-1 flex min-h-0">
-        {/* Left/Center: Puzzle Board (full remaining space) */}
-        <div className="flex-1 flex flex-col items-center justify-center" style={{ padding: "32px 24px" }}>
-          <PuzzleBoard
-            phrase={gameState.phrase}
-            revealedLetters={gameState.revealedLetters}
-            category={gameState.category}
-            newlyRevealed={newlyRevealed}
-          />
+        {/* Left/Center: Wheel on top, Puzzle Board below */}
+        <div className="flex-1 flex flex-col items-center" style={{ padding: "16px 24px" }}>
+          {/* Wheel */}
+          <div className="flex items-center justify-center" style={{ flexShrink: 0, padding: "0 0 12px" }}>
+            <Wheel
+              onSpinComplete={handleSpinComplete}
+              spinning={spinning}
+              onSpinStart={handleSpinStart}
+              disabled={!canSpin}
+              size={220}
+              hideButton
+            />
+          </div>
+          {/* Puzzle Board */}
+          <div className="flex-1 flex flex-col items-center justify-center">
+            <PuzzleBoard
+              phrase={gameState.phrase}
+              revealedLetters={gameState.revealedLetters}
+              category={gameState.category}
+              newlyRevealed={newlyRevealed}
+            />
+          </div>
         </div>
 
-        {/* Right panel: Wheel + Event Feed + Host Controls (~24%) */}
+        {/* Right panel: Spin button + Event Feed + Host Controls (~24%) */}
         <div
           className="flex flex-col min-h-0"
           style={{
@@ -436,14 +450,23 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
           }}
         >
           <div className="flex-1 flex flex-col min-h-0 overflow-y-auto">
-            {/* Wheel */}
-            <div className="flex items-center justify-center" style={{ flexShrink: 0, padding: "12px 12px 8px" }}>
-              <Wheel
-                onSpinComplete={handleSpinComplete}
-                spinning={spinning}
-                onSpinStart={handleSpinStart}
-                disabled={!canSpin}
-              />
+            {/* Spin the Wheel button */}
+            <div style={{ flexShrink: 0, padding: "12px 12px 8px" }}>
+              <button
+                onClick={handleSpinStart}
+                disabled={!canSpin || spinning}
+                className="w-full py-3 px-4 rounded font-bold text-base uppercase tracking-wider transition-all"
+                style={{
+                  fontFamily: "Oswald, sans-serif",
+                  backgroundColor: !canSpin || spinning ? "#333" : "#F5C518",
+                  color: !canSpin || spinning ? "#666" : "#0A1628",
+                  cursor: !canSpin || spinning ? "not-allowed" : "pointer",
+                  letterSpacing: "0.04em",
+                  fontSize: 16,
+                }}
+              >
+                {spinning ? "Spinning..." : "Spin the Wheel"}
+              </button>
             </div>
 
             {/* Event Feed */}

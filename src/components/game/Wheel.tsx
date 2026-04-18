@@ -7,9 +7,11 @@ interface WheelProps {
   spinning: boolean;
   onSpinStart: () => void;
   disabled: boolean;
+  size?: number;
+  hideButton?: boolean;
 }
 
-const CANVAS_SIZE = 190;
+const DEFAULT_CANVAS_SIZE = 280;
 
 function secureRandom(): number {
   const arr = new Uint32Array(1);
@@ -17,7 +19,8 @@ function secureRandom(): number {
   return arr[0] / 4294967295;
 }
 
-export function Wheel({ onSpinComplete, spinning, onSpinStart, disabled }: WheelProps) {
+export function Wheel({ onSpinComplete, spinning, onSpinStart, disabled, size, hideButton }: WheelProps) {
+  const CANVAS_SIZE = size ?? DEFAULT_CANVAS_SIZE;
   const [rotation, setRotation] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -183,20 +186,22 @@ export function Wheel({ onSpinComplete, spinning, onSpinStart, disabled }: Wheel
         style={{ width: "100%", maxWidth: CANVAS_SIZE, height: "auto", aspectRatio: "1 / 1" }}
         aria-label="Wheel of Fortune spinning wheel"
       />
-      <button
-        onClick={onSpinStart}
-        disabled={disabled || isAnimating}
-        className="w-full py-2 px-4 rounded font-bold text-sm uppercase tracking-wider transition-all"
-        style={{
-          fontFamily: "Oswald, sans-serif",
-          backgroundColor: disabled || isAnimating ? "#333" : "#F5C518",
-          color: disabled || isAnimating ? "#666" : "#0A1628",
-          cursor: disabled || isAnimating ? "not-allowed" : "pointer",
-          letterSpacing: "0.04em",
-        }}
-      >
-        {isAnimating ? "Spinning..." : "Spin the Wheel"}
-      </button>
+      {!hideButton && (
+        <button
+          onClick={onSpinStart}
+          disabled={disabled || isAnimating}
+          className="w-full py-2 px-4 rounded font-bold text-sm uppercase tracking-wider transition-all"
+          style={{
+            fontFamily: "Oswald, sans-serif",
+            backgroundColor: disabled || isAnimating ? "#333" : "#F5C518",
+            color: disabled || isAnimating ? "#666" : "#0A1628",
+            cursor: disabled || isAnimating ? "not-allowed" : "pointer",
+            letterSpacing: "0.04em",
+          }}
+        >
+          {isAnimating ? "Spinning..." : "Spin the Wheel"}
+        </button>
+      )}
     </div>
   );
 }

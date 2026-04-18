@@ -3,15 +3,18 @@ import { Wheel } from "./Wheel";
 import { PuzzleBoard } from "./PuzzleBoard";
 import { Scoreboard } from "./Scoreboard";
 import { HostControls } from "./HostControls";
+import { SessionControls } from "./SessionControls";
 import { VOWELS, type GameState, type WheelResult } from "./types";
 import { playDingSound, playBuzzerSound, playApplauseSound } from "./sounds";
 
 interface GameScreenProps {
   gameState: GameState;
   setGameState: React.Dispatch<React.SetStateAction<GameState>>;
+  onNewGame: () => void;
+  onFullReset: () => void;
 }
 
-export function GameScreen({ gameState, setGameState }: GameScreenProps) {
+export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: GameScreenProps) {
   const [spinning, setSpinning] = useState(false);
   const [buyingVowel, setBuyingVowel] = useState(false);
   const [newlyRevealed, setNewlyRevealed] = useState<string[]>([]);
@@ -330,6 +333,14 @@ export function GameScreen({ gameState, setGameState }: GameScreenProps) {
 
   return (
     <div className="h-screen w-screen flex flex-col" style={{ backgroundColor: "#0A1628", overflow: "hidden" }}>
+      {/* Session control bar */}
+      <SessionControls
+        isRoundInProgress={gameState.phase === "playing"}
+        onNewGame={onNewGame}
+        onFullReset={onFullReset}
+        roundNumber={gameState.roundNumber}
+      />
+
       {/* Main area */}
       <div className="flex-1 flex min-h-0">
         {/* Left: Wheel (20%) */}

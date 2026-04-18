@@ -69,8 +69,28 @@ export const Home = () => {
     }));
   }, []);
 
-  // End game (go back to setup)
-  const handleEndGame = useCallback(() => {
+  // New game mid-round: discard current round scores, keep session totals, go to round setup
+  const handleNewGameMidRound = useCallback(() => {
+    setGameState(prev => ({
+      ...prev,
+      phase: "roundSetup",
+      turnPhase: "idle",
+      roundNumber: prev.roundNumber + 1,
+      currentPlayerIndex: 0,
+      phrase: "",
+      category: "",
+      revealedLetters: new Set(),
+      guessedLetters: new Set(),
+      currentWheelValue: 0,
+      currentSpinResult: null,
+      roundWinner: null,
+      players: prev.players.map(p => ({ ...p, roundScore: 0 })),
+      message: "",
+    }));
+  }, []);
+
+  // Full reset: go all the way back to setup screen
+  const handleFullReset = useCallback(() => {
     setGameState(initialGameState);
   }, []);
 
@@ -86,10 +106,22 @@ export const Home = () => {
       {gameState.phase === "setup" && <SetupScreen onStartGame={handleStartGame} />}
 
       {gameState.phase === "roundSetup" && (
-        <RoundSetup roundNumber={gameState.roundNumber} onStartRound={handleStartRound} />
+        <RoundSetup
+          roundNumber={gameState.roundNumber}
+          onStartRound={handleStartRound}
+          onFullReset={handleFullReset}
+          players={gameState.players}
+        />
       )}
 
-      {gameState.phase === "playing" && <GameScreen gameState={gameState} setGameState={setGameState} />}
+      {gameState.phase === "playing" && (
+        <GameScreen
+          gameState={gameState}
+          setGameState={setGameState}
+          onNewGame={handleNewGameMidRound}
+          onFullReset={handleFullReset}
+        />
+      )}
 
       {gameState.phase === "roundEnd" && (
         <RoundEnd
@@ -97,7 +129,7 @@ export const Home = () => {
           phrase={gameState.phrase}
           players={gameState.players}
           onNewRound={handleNewRound}
-          onEndGame={handleEndGame}
+          onEndGame={handleFullReset}
         />
       )}
     </>

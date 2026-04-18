@@ -1,0 +1,226 @@
+import {
+  actionType,
+  createObjectActionImplementation,
+  deleteObjectActionImplementation,
+  modifyObjectActionImplementation,
+  objectType,
+  oneToManyLinkType,
+  ontology,
+} from "@palantir/pilot-ontology-api";
+
+const airline = objectType({
+  apiName: "airline",
+  displayName: "Airline",
+  pluralDisplayName: "Airlines",
+  icon: {
+    name: "globe",
+    color: "#1F4B99",
+  },
+  properties: {
+    code: {
+      displayName: "Code",
+      nullable: false,
+      type: { type: "string" },
+    },
+    name: {
+      displayName: "Name",
+      nullable: false,
+      type: { type: "string" },
+    },
+  },
+  primaryKeyPropertyApiName: "code",
+  titlePropertyApiName: "name",
+});
+
+const airplane = objectType({
+  apiName: "airplane",
+  displayName: "Airplane",
+  pluralDisplayName: "Airplanes",
+  icon: {
+    name: "airplane",
+    color: "#137CBD",
+  },
+  properties: {
+    id: {
+      displayName: "ID",
+      nullable: false,
+      type: { type: "string" },
+    },
+    tailNumber: {
+      displayName: "Tail Number",
+      nullable: false,
+      type: { type: "string" },
+    },
+    age: {
+      displayName: "Age",
+      nullable: true,
+      type: { type: "integer" },
+    },
+    airlineCode: {
+      displayName: "Airline Code",
+      nullable: false,
+      type: { type: "string" },
+    },
+  },
+  primaryKeyPropertyApiName: "id",
+  titlePropertyApiName: "tailNumber",
+});
+
+/**
+ * CREATE action type:
+ * - Parameters represent the property values for the new object
+ * - Should have a parameter for each property you want to set (including the primary key)
+ *
+ * Parameter required/optional rules:
+ * - Required parameters (required: true) can map to ANY property (nullable or non-nullable)
+ * - Optional parameters (required: false) can ONLY map to nullable properties (nullable: true)
+ * - All non-nullable properties MUST have a corresponding required parameter
+ */
+const createAirplane = actionType({
+  apiName: "create-airplane",
+  displayName: "Create Airplane",
+  icon: {
+    name: "plus",
+    color: "#0F9960",
+  },
+  parameters: {
+    // Maps to "id" (nullable: false) - MUST be required
+    id: {
+      displayName: "ID",
+      required: true,
+      type: { type: "string" },
+    },
+    // Maps to "tailNumber" (nullable: false) - MUST be required
+    tailNumber: {
+      displayName: "Tail Number",
+      required: true,
+      type: { type: "string" },
+    },
+    // Maps to "airlineCode" (nullable: false) - MUST be required
+    airlineCode: {
+      displayName: "Airline Code",
+      required: true,
+      type: { type: "string" },
+    },
+    // Maps to "age" (nullable: true) - can be optional
+    age: {
+      displayName: "Age",
+      required: false,
+      type: { type: "integer" },
+    },
+  },
+});
+
+/**
+ * CREATE action implementation:
+ * - ALL parameters must be mapped to object properties in parameterMapping
+ * - One parameter must map to the primary key property ("id" in this case)
+ */
+const createAirplaneImplementation = createObjectActionImplementation({
+  actionType: createAirplane,
+  objectType: airplane,
+  parameterMapping: {
+    id: "id",
+    tailNumber: "tailNumber",
+    airlineCode: "airlineCode",
+    age: "age",
+  },
+});
+
+/**
+ * MODIFY action type:
+ * - Must have a required "object" type parameter to identify which object to modify
+ * - Other parameters represent the properties to update
+ *
+ * Parameter required/optional rules (same as create):
+ * - Required parameters (required: true) can map to ANY property (nullable or non-nullable)
+ * - Optional parameters (required: false) can ONLY map to nullable properties (nullable: true)
+ */
+const updateAirplane = actionType({
+  apiName: "update-airplane",
+  displayName: "Update Airplane",
+  icon: {
+    name: "edit",
+    color: "#D9822B",
+  },
+  parameters: {
+    // This parameter identifies WHICH airplane to modify (required object reference)
+    airplane: {
+      displayName: "Airplane",
+      required: true,
+      type: { type: "object", objectTypeApiName: "airplane" },
+    },
+    // Maps to "age" (nullable: true) - can be optional
+    age: {
+      displayName: "Age",
+      required: false,
+      type: { type: "integer" },
+    },
+  },
+});
+
+/**
+ * MODIFY action implementation:
+ * - primaryKeyParameter identifies which parameter references the object to modify
+ * - parameterMapping maps OTHER parameters to properties (do NOT include primaryKeyParameter)
+ */
+const updateAirplaneImplementation = modifyObjectActionImplementation({
+  actionType: updateAirplane,
+  objectType: airplane,
+  primaryKeyParameter: "airplane",
+  parameterMapping: {
+    // Note: "airplane" is NOT included here - it's the primaryKeyParameter
+    age: "age",
+  },
+});
+
+/**
+ * DELETE action type:
+ * - Must have a required "object" type parameter to identify which object to delete
+ */
+const deleteAirplane = actionType({
+  apiName: "delete-airplane",
+  displayName: "Delete Airplane",
+  icon: {
+    name: "trash",
+    color: "#DB3737",
+  },
+  parameters: {
+    // This parameter identifies WHICH airplane to delete (required object reference)
+    airplane: {
+      displayName: "Airplane",
+      required: true,
+      type: { type: "object", objectTypeApiName: "airplane" },
+    },
+  },
+});
+
+/**
+ * DELETE action implementation:
+ * - Only needs primaryKeyParameter (no parameterMapping field)
+ * - primaryKeyParameter identifies which parameter references the object to delete
+ */
+const deleteAirplaneImplementation = deleteObjectActionImplementation({
+  actionType: deleteAirplane,
+  objectType: airplane,
+  primaryKeyParameter: "airplane",
+  // Note: Delete actions do NOT have a parameterMapping field
+});
+
+const airlineToAirplanes = oneToManyLinkType({
+  one: {
+    objectType: airline,
+    linkApiName: "airplanes",
+  },
+  toMany: {
+    objectType: airplane,
+    linkApiName: "airline",
+    foreignKeyPropertyApiName: "airlineCode",
+  },
+});
+
+export const ontologyDefinition = ontology({
+  actionTypes: [createAirplaneImplementation, updateAirplaneImplementation, deleteAirplaneImplementation],
+  objectTypes: [airline, airplane],
+  linkTypes: [airlineToAirplanes],
+});

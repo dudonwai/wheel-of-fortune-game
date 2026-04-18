@@ -1,0 +1,11 @@
+!/node_modules/.pilot/.faux-datastore.json
+!/node_modules/.pilot/.foundry-users.json
+!logs
+!.osdk
+.npmrc
+gradle.properties
+templateConfig.json
+ci.yml
+.husky
+.jemma
+.vscode

@@ -447,7 +447,7 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
               spinning={spinning}
               onSpinStart={handleSpinStart}
               disabled={!canSpin}
-              size={330}
+              size={412}
               hideButton
             />
           </div>

@@ -7,8 +7,14 @@ interface LetterBoardProps {
   buyingVowel: boolean;
 }
 
-const CONSONANTS = "BCDFGHJKLMNPQRSTVWXYZ".split("");
-const VOWEL_LIST = "AEIOU".split("");
+const ALL_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+const LETTERS_PER_ROW = 6;
+
+// Split into rows of 6
+const ROWS: string[][] = [];
+for (let i = 0; i < ALL_LETTERS.length; i += LETTERS_PER_ROW) {
+  ROWS.push(ALL_LETTERS.slice(i, i + LETTERS_PER_ROW));
+}
 
 export function LetterBoard({ guessedLetters, onLetterClick, disabled, buyingVowel }: LetterBoardProps) {
   const renderLetter = (letter: string) => {
@@ -26,10 +32,11 @@ export function LetterBoard({ guessedLetters, onLetterClick, disabled, buyingVow
         disabled={isDisabled}
         className="flex items-center justify-center rounded transition-all"
         style={{
-          width: 36,
-          height: 40,
+          flex: "1 1 0",
+          minWidth: 0,
+          height: 38,
           fontFamily: "Oswald, sans-serif",
-          fontSize: 18,
+          fontSize: 17,
           fontWeight: 700,
           letterSpacing: "0.04em",
           textTransform: "uppercase",
@@ -57,37 +64,17 @@ export function LetterBoard({ guessedLetters, onLetterClick, disabled, buyingVow
   };
 
   return (
-    <div className="flex flex-col gap-3">
-      {/* Consonants label */}
-      <div
-        style={{
-          fontFamily: "Archivo, sans-serif",
-          fontSize: 13,
-          fontWeight: 500,
-          color: "rgba(255,255,255,0.5)",
-          textTransform: "uppercase",
-          letterSpacing: "0.08em",
-        }}
-      >
-        Consonants
-      </div>
-      <div className="flex flex-wrap gap-1">{CONSONANTS.map(renderLetter)}</div>
-
-      {/* Vowels label */}
-      <div
-        style={{
-          fontFamily: "Archivo, sans-serif",
-          fontSize: 13,
-          fontWeight: 500,
-          color: "rgba(255,255,255,0.5)",
-          textTransform: "uppercase",
-          letterSpacing: "0.08em",
-          marginTop: 4,
-        }}
-      >
-        Vowels
-      </div>
-      <div className="flex gap-1">{VOWEL_LIST.map(renderLetter)}</div>
+    <div className="flex flex-col gap-1">
+      {ROWS.map((row, rowIdx) => (
+        <div key={rowIdx} className="flex gap-1">
+          {row.map(renderLetter)}
+          {/* Pad the last row so buttons stay the same width */}
+          {row.length < LETTERS_PER_ROW &&
+            Array.from({ length: LETTERS_PER_ROW - row.length }).map((_, i) => (
+              <div key={`pad-${i}`} style={{ flex: "1 1 0", minWidth: 0 }} />
+            ))}
+        </div>
+      ))}
     </div>
   );
 }

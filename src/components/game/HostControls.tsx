@@ -28,8 +28,9 @@ export function HostControls({
 
   const currentPlayer = gameState.players[gameState.currentPlayerIndex];
   const canBuyVowel = currentPlayer && currentPlayer.roundScore >= 250;
+  const isRoundComplete = turnPhase === "roundComplete";
 
-  const letterBoardDisabled = turnPhase !== "guessing" && turnPhase !== "buyingVowel";
+  const letterBoardDisabled = isRoundComplete || (turnPhase !== "guessing" && turnPhase !== "buyingVowel");
 
   const handleSolveSubmit = () => {
     onSolve(solveGuess);
@@ -89,7 +90,9 @@ export function HostControls({
         {/* Buy a Vowel */}
         <button
           onClick={onBuyVowelToggle}
-          disabled={!canBuyVowel || turnPhase === "spinning" || turnPhase === "solving" || buyingVowel}
+          disabled={
+            isRoundComplete || !canBuyVowel || turnPhase === "spinning" || turnPhase === "solving" || buyingVowel
+          }
           className="w-full py-2 px-3 rounded font-bold text-sm transition-all"
           style={{
             fontFamily: "Archivo, sans-serif",
@@ -114,7 +117,7 @@ export function HostControls({
         {!solveMode ? (
           <button
             onClick={() => setSolveMode(true)}
-            disabled={turnPhase === "spinning"}
+            disabled={isRoundComplete || turnPhase === "spinning"}
             className="w-full py-2 px-3 rounded font-bold text-sm transition-all"
             style={{
               fontFamily: "Archivo, sans-serif",
@@ -123,9 +126,9 @@ export function HostControls({
               letterSpacing: "0.04em",
               textTransform: "uppercase",
               backgroundColor: "rgba(255,255,255,0.1)",
-              color: turnPhase === "spinning" ? "rgba(255,255,255,0.25)" : "#FFFFFF",
+              color: isRoundComplete || turnPhase === "spinning" ? "rgba(255,255,255,0.25)" : "#FFFFFF",
               border: "1px solid rgba(255,255,255,0.15)",
-              cursor: turnPhase === "spinning" ? "not-allowed" : "pointer",
+              cursor: isRoundComplete || turnPhase === "spinning" ? "not-allowed" : "pointer",
             }}
           >
             Solve Puzzle
@@ -192,7 +195,7 @@ export function HostControls({
         {/* Next Player */}
         <button
           onClick={onNextPlayer}
-          disabled={turnPhase === "spinning"}
+          disabled={isRoundComplete || turnPhase === "spinning"}
           className="w-full py-2 px-3 rounded font-bold text-sm transition-all"
           style={{
             fontFamily: "Archivo, sans-serif",
@@ -201,9 +204,9 @@ export function HostControls({
             letterSpacing: "0.04em",
             textTransform: "uppercase",
             backgroundColor: "rgba(255,255,255,0.05)",
-            color: turnPhase === "spinning" ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.6)",
+            color: isRoundComplete || turnPhase === "spinning" ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.6)",
             border: "1px solid rgba(255,255,255,0.08)",
-            cursor: turnPhase === "spinning" ? "not-allowed" : "pointer",
+            cursor: isRoundComplete || turnPhase === "spinning" ? "not-allowed" : "pointer",
           }}
         >
           Next Player

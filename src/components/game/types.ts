@@ -32,7 +32,7 @@ export const VOWELS = new Set(["A", "E", "I", "O", "U"]);
 
 export type GamePhase = "setup" | "roundSetup" | "playing" | "roundEnd" | "gameEnd";
 
-export type TurnPhase = "idle" | "spinning" | "spinResult" | "guessing" | "buyingVowel" | "solving";
+export type TurnPhase = "idle" | "spinning" | "spinResult" | "guessing" | "buyingVowel" | "solving" | "roundComplete";
 
 export interface GameState {
   phase: GamePhase;

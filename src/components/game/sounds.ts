@@ -61,14 +61,19 @@ export function playApplauseSound(): void {
   const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
   const data = buffer.getChannelData(0);
 
-  // Use crypto for random values
-  const randomValues = new Uint32Array(bufferSize);
-  crypto.getRandomValues(randomValues);
-
-  for (let i = 0; i < bufferSize; i++) {
-    const t = i / ctx.sampleRate;
-    const envelope = t < 0.3 ? t / 0.3 : (duration - t) / (duration - 0.3);
-    data[i] = ((randomValues[i] / 4294967295) * 2 - 1) * 0.15 * envelope;
+  // Generate noise using crypto.getRandomValues in chunks to stay within the 65536-byte API limit
+  const chunkSize = 16384; // 16384 Uint32 entries = 65536 bytes (the max allowed)
+  for (let offset = 0; offset < bufferSize; offset += chunkSize) {
+    const remaining = bufferSize - offset;
+    const count = remaining < chunkSize ? remaining : chunkSize;
+    const chunk = new Uint32Array(count);
+    crypto.getRandomValues(chunk);
+    for (let j = 0; j < count; j++) {
+      const i = offset + j;
+      const t = i / ctx.sampleRate;
+      const envelope = t < 0.3 ? t / 0.3 : (duration - t) / (duration - 0.3);
+      data[i] = ((chunk[j] / 4294967295) * 2 - 1) * 0.15 * envelope;
+    }
   }
 
   const source = ctx.createBufferSource();

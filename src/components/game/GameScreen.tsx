@@ -45,7 +45,11 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
   // Win round
   const winRound = useCallback(
     (playerIndex: number) => {
-      playApplauseSound();
+      try {
+        playApplauseSound();
+      } catch {
+        // Sound failure should never prevent score updates
+      }
       setGameState(prev => {
         const updatedPlayers = prev.players.map((p, i) => {
           if (i === playerIndex) {
@@ -151,6 +155,8 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
           setNewlyRevealed([upperLetter]);
           setTimeout(() => setNewlyRevealed([]), 1000);
 
+          const allRevealed = checkAllRevealed(newRevealed, gameState.phrase);
+
           setGameState(prev => {
             const updatedPlayers = prev.players.map((p, i) => {
               if (i === prev.currentPlayerIndex) {
@@ -163,7 +169,7 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
               players: updatedPlayers,
               revealedLetters: newRevealed,
               guessedLetters: newGuessed,
-              turnPhase: "idle",
+              turnPhase: allRevealed ? "roundComplete" : "idle",
               currentSpinResult: null,
               message: `${upperLetter} is in the puzzle! (${count} time${count > 1 ? "s" : ""})`,
             };
@@ -171,7 +177,7 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
           setBuyingVowel(false);
 
           // Check if all letters revealed
-          if (checkAllRevealed(newRevealed, gameState.phrase)) {
+          if (allRevealed) {
             setTimeout(() => winRound(gameState.currentPlayerIndex), 800);
           }
         } else {
@@ -214,6 +220,7 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
           setTimeout(() => setNewlyRevealed([]), 1000);
 
           const earned = gameState.currentWheelValue * count;
+          const allRevealed = checkAllRevealed(newRevealed, gameState.phrase);
 
           setGameState(prev => {
             const updatedPlayers = prev.players.map((p, i) => {
@@ -227,14 +234,14 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
               players: updatedPlayers,
               revealedLetters: newRevealed,
               guessedLetters: newGuessed,
-              turnPhase: "idle",
+              turnPhase: allRevealed ? "roundComplete" : "idle",
               currentSpinResult: null,
               message: `${count} ${upperLetter}${count > 1 ? "'s" : ""}! +$${earned.toLocaleString()}`,
             };
           });
 
           // Check if all letters revealed
-          if (checkAllRevealed(newRevealed, gameState.phrase)) {
+          if (allRevealed) {
             setTimeout(() => winRound(gameState.currentPlayerIndex), 800);
           }
         } else {
@@ -296,9 +303,11 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
         setNewlyRevealed(uniqueNewLetters);
         setTimeout(() => setNewlyRevealed([]), 2000);
 
+        // Immediately mark the round as complete to disable all host controls
         setGameState(prev => ({
           ...prev,
           revealedLetters: allLetters,
+          turnPhase: "roundComplete",
           message: `${currentPlayer.name} solved it!`,
         }));
 

@@ -415,7 +415,7 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
 
       {/* Main 3-column layout */}
       <div className="flex-1 flex min-h-0">
-        {/* Left panel: Scoreboard + Event Feed (~20%) */}
+        {/* Left panel: Scores + Spin button + Host Controls (~20%) */}
         <div
           className="flex flex-col min-h-0"
           style={{
@@ -425,56 +425,14 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
             overflow: "hidden",
           }}
         >
-          <div className="flex-1 flex flex-col min-h-0" style={{ padding: "12px" }}>
+          <div className="flex-1 flex flex-col min-h-0 overflow-y-auto">
             {/* Scoreboard */}
-            <div style={{ flexShrink: 0 }}>
+            <div style={{ flexShrink: 0, padding: "12px 12px 8px" }}>
               <Scoreboard players={gameState.players} currentPlayerIndex={gameState.currentPlayerIndex} />
             </div>
 
-            {/* Event Feed — fills remaining space */}
-            <div className="flex-1 min-h-0" style={{ marginTop: 12 }}>
-              <EventFeed events={gameState.feedEvents} />
-            </div>
-          </div>
-        </div>
-
-        {/* Middle: Wheel + Puzzle Board (~60%) */}
-        <div className="flex-1 flex flex-col items-center" style={{ padding: "16px 24px" }}>
-          {/* Wheel */}
-          <div className="flex items-center justify-center" style={{ flexShrink: 0, padding: "0 0 12px" }}>
-            <Wheel
-              onSpinComplete={handleSpinComplete}
-              spinning={spinning}
-              onSpinStart={handleSpinStart}
-              disabled={!canSpin}
-              size={412}
-              hideButton
-            />
-          </div>
-          {/* Puzzle Board */}
-          <div className="flex-1 flex flex-col items-center justify-center">
-            <PuzzleBoard
-              phrase={gameState.phrase}
-              revealedLetters={gameState.revealedLetters}
-              category={gameState.category}
-              newlyRevealed={newlyRevealed}
-            />
-          </div>
-        </div>
-
-        {/* Right panel: Spin button + Host Controls (~20%) */}
-        <div
-          className="flex flex-col min-h-0"
-          style={{
-            width: "20%",
-            minWidth: 220,
-            borderLeft: "1px solid rgba(255,255,255,0.06)",
-            overflow: "hidden",
-          }}
-        >
-          <div className="flex-1 flex flex-col min-h-0 overflow-y-auto">
             {/* Spin the Wheel button */}
-            <div style={{ flexShrink: 0, padding: "12px 12px 8px" }}>
+            <div style={{ flexShrink: 0, padding: "4px 12px 8px" }}>
               <button
                 onClick={handleSpinStart}
                 disabled={!canSpin || spinning}
@@ -503,6 +461,47 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
               currentSpinResult={gameState.currentSpinResult}
               turnPhase={gameState.turnPhase}
             />
+          </div>
+        </div>
+
+        {/* Middle: Wheel + Puzzle Board (~60%) */}
+        <div className="flex-1 flex flex-col items-center" style={{ padding: "16px 24px" }}>
+          {/* Wheel */}
+          <div className="flex items-center justify-center" style={{ flexShrink: 0, padding: "0 0 12px" }}>
+            <Wheel
+              onSpinComplete={handleSpinComplete}
+              spinning={spinning}
+              onSpinStart={handleSpinStart}
+              disabled={!canSpin}
+              size={412}
+              hideButton
+            />
+          </div>
+          {/* Puzzle Board */}
+          <div className="flex-1 flex flex-col items-center justify-center">
+            <PuzzleBoard
+              phrase={gameState.phrase}
+              revealedLetters={gameState.revealedLetters}
+              category={gameState.category}
+              newlyRevealed={newlyRevealed}
+            />
+          </div>
+        </div>
+
+        {/* Right panel: Event Feed (~20%) */}
+        <div
+          className="flex flex-col min-h-0"
+          style={{
+            width: "20%",
+            minWidth: 220,
+            borderLeft: "1px solid rgba(255,255,255,0.06)",
+            overflow: "hidden",
+          }}
+        >
+          <div className="flex-1 flex flex-col min-h-0" style={{ padding: "12px" }}>
+            <div className="flex-1 min-h-0">
+              <EventFeed events={gameState.feedEvents} />
+            </div>
           </div>
         </div>
       </div>

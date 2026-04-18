@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { PLAYER_COLORS } from "./types";
 
 interface SetupScreenProps {
   onStartGame: (playerNames: string[]) => void;
@@ -105,47 +106,61 @@ export function SetupScreen({ onStartGame }: SetupScreenProps) {
 
         {/* Player names */}
         <div className="w-full flex flex-col gap-3">
-          {Array.from({ length: numPlayers }).map((_, i) => (
-            <div key={i}>
-              <label
-                htmlFor={`player-name-${i}`}
-                style={{
-                  fontFamily: "Archivo, sans-serif",
-                  fontSize: 13,
-                  fontWeight: 500,
-                  color: "rgba(255,255,255,0.4)",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.06em",
-                  display: "block",
-                  marginBottom: 4,
-                }}
-              >
-                Player {i + 1}
-              </label>
-              <input
-                id={`player-name-${i}`}
-                type="text"
-                value={playerNames[i]}
-                onChange={e => handleNameChange(i, e.target.value)}
-                placeholder={`Enter player ${i + 1} name`}
-                className="w-full px-4 py-3 rounded"
-                style={{
-                  fontFamily: "Archivo, sans-serif",
-                  fontSize: 18,
-                  fontWeight: 500,
-                  backgroundColor: "rgba(255,255,255,0.08)",
-                  color: "#FFFFFF",
-                  border: "2px solid rgba(255,255,255,0.1)",
-                  outline: "none",
-                }}
-                onKeyDown={e => {
-                  if (e.key === "Enter" && canStart) {
-                    handleStart();
-                  }
-                }}
-              />
-            </div>
-          ))}
+          {Array.from({ length: numPlayers }).map((_, i) => {
+            const color = PLAYER_COLORS[i % PLAYER_COLORS.length];
+            return (
+              <div key={i}>
+                <label
+                  htmlFor={`player-name-${i}`}
+                  className="flex items-center gap-2"
+                  style={{
+                    fontFamily: "Archivo, sans-serif",
+                    fontSize: 13,
+                    fontWeight: 600,
+                    color: color,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.06em",
+                    display: "flex",
+                    marginBottom: 4,
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 10,
+                      height: 10,
+                      borderRadius: "50%",
+                      backgroundColor: color,
+                      display: "inline-block",
+                      flexShrink: 0,
+                    }}
+                  />
+                  Player {i + 1}
+                </label>
+                <input
+                  id={`player-name-${i}`}
+                  type="text"
+                  value={playerNames[i]}
+                  onChange={e => handleNameChange(i, e.target.value)}
+                  placeholder={`Enter player ${i + 1} name`}
+                  className="w-full px-4 py-3 rounded"
+                  style={{
+                    fontFamily: "Archivo, sans-serif",
+                    fontSize: 18,
+                    fontWeight: 500,
+                    backgroundColor: "rgba(255,255,255,0.08)",
+                    color: "#FFFFFF",
+                    border: `2px solid ${color}44`,
+                    outline: "none",
+                  }}
+                  onKeyDown={e => {
+                    if (e.key === "Enter" && canStart) {
+                      handleStart();
+                    }
+                  }}
+                />
+              </div>
+            );
+          })}
         </div>
 
         {/* Start button */}

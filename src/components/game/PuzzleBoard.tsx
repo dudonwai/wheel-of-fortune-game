@@ -94,7 +94,7 @@ export function PuzzleBoard({ phrase, revealedLetters, category, newlyRevealed }
         className="text-center px-6 py-2 rounded"
         style={{
           fontFamily: "Oswald, sans-serif",
-          fontSize: "28px",
+          fontSize: "18px",
           fontWeight: 700,
           color: "#F5C518",
           textTransform: "uppercase",
@@ -129,7 +129,7 @@ export function PuzzleBoard({ phrase, revealedLetters, category, newlyRevealed }
                 const isSpace = char === " ";
 
                 if (isSpace) {
-                  return <div key={globalIdx} style={{ width: 24, height: 56 }} />;
+                  return <div key={globalIdx} style={{ width: 16, height: 36 }} />;
                 }
 
                 if (!isLetter) {
@@ -139,12 +139,12 @@ export function PuzzleBoard({ phrase, revealedLetters, category, newlyRevealed }
                       key={globalIdx}
                       className="flex items-center justify-center"
                       style={{
-                        width: 48,
-                        height: 56,
+                        width: 32,
+                        height: 36,
                         backgroundColor: "#FFFFFF",
-                        borderRadius: 4,
+                        borderRadius: 3,
                         fontFamily: "Oswald, sans-serif",
-                        fontSize: 40,
+                        fontSize: 18,
                         fontWeight: 700,
                         color: "#0A1628",
                       }}
@@ -164,13 +164,13 @@ export function PuzzleBoard({ phrase, revealedLetters, category, newlyRevealed }
                     key={globalIdx}
                     className="flex items-center justify-center"
                     style={{
-                      width: 48,
-                      height: 56,
-                      borderRadius: 4,
+                      width: 32,
+                      height: 36,
+                      borderRadius: 3,
                       backgroundColor: isRevealed ? "#FFFFFF" : "#1B6B4A",
                       border: isRevealed ? "none" : "2px solid rgba(255,255,255,0.1)",
                       fontFamily: "Oswald, sans-serif",
-                      fontSize: 40,
+                      fontSize: 18,
                       fontWeight: 700,
                       color: "#0A1628",
                       transform: isFlipping ? "rotateY(180deg)" : "rotateY(0deg)",

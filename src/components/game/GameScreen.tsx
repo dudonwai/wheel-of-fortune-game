@@ -413,9 +413,32 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
         roundNumber={gameState.roundNumber}
       />
 
-      {/* Main area */}
+      {/* Main 3-column layout */}
       <div className="flex-1 flex min-h-0">
-        {/* Left/Center: Wheel on top, Puzzle Board below */}
+        {/* Left panel: Scoreboard + Event Feed (~20%) */}
+        <div
+          className="flex flex-col min-h-0"
+          style={{
+            width: "20%",
+            minWidth: 220,
+            borderRight: "1px solid rgba(255,255,255,0.06)",
+            overflow: "hidden",
+          }}
+        >
+          <div className="flex-1 flex flex-col min-h-0" style={{ padding: "12px" }}>
+            {/* Scoreboard */}
+            <div style={{ flexShrink: 0 }}>
+              <Scoreboard players={gameState.players} currentPlayerIndex={gameState.currentPlayerIndex} />
+            </div>
+
+            {/* Event Feed — fills remaining space */}
+            <div className="flex-1 min-h-0" style={{ marginTop: 12 }}>
+              <EventFeed events={gameState.feedEvents} />
+            </div>
+          </div>
+        </div>
+
+        {/* Middle: Wheel + Puzzle Board (~60%) */}
         <div className="flex-1 flex flex-col items-center" style={{ padding: "16px 24px" }}>
           {/* Wheel */}
           <div className="flex items-center justify-center" style={{ flexShrink: 0, padding: "0 0 12px" }}>
@@ -439,12 +462,12 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
           </div>
         </div>
 
-        {/* Right panel: Spin button + Event Feed + Host Controls (~24%) */}
+        {/* Right panel: Spin button + Host Controls (~20%) */}
         <div
           className="flex flex-col min-h-0"
           style={{
-            width: "24%",
-            minWidth: 240,
+            width: "20%",
+            minWidth: 220,
             borderLeft: "1px solid rgba(255,255,255,0.06)",
             overflow: "hidden",
           }}
@@ -469,12 +492,7 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
               </button>
             </div>
 
-            {/* Event Feed */}
-            <div style={{ flexShrink: 0, padding: "0 12px 8px" }}>
-              <EventFeed events={gameState.feedEvents} />
-            </div>
-
-            {/* Host Controls */}
+            {/* Host Controls (Letter board + action buttons) */}
             <HostControls
               gameState={gameState}
               onLetterClick={handleLetterClick}
@@ -488,9 +506,6 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
           </div>
         </div>
       </div>
-
-      {/* Bottom: Scoreboard */}
-      <Scoreboard players={gameState.players} currentPlayerIndex={gameState.currentPlayerIndex} />
     </div>
   );
 }

@@ -53,11 +53,10 @@ export function EventFeed({ events }: EventFeedProps) {
 
   return (
     <div
-      className="flex flex-col rounded"
+      className="flex flex-col rounded h-full"
       style={{
         backgroundColor: "rgba(0,0,0,0.25)",
         border: "1px solid rgba(255,255,255,0.06)",
-        maxHeight: "100%",
         overflow: "hidden",
       }}
     >
@@ -79,7 +78,7 @@ export function EventFeed({ events }: EventFeedProps) {
       </div>
 
       {/* Scrollable feed */}
-      <ScrollArea className="flex-1" style={{ maxHeight: 220 }}>
+      <ScrollArea className="flex-1">
         <div className="flex flex-col" style={{ padding: "4px 0" }}>
           {events.map(event => {
             const style = getEventStyle(event.type);

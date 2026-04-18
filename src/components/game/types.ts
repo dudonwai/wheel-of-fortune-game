@@ -34,6 +34,25 @@ export type GamePhase = "setup" | "roundSetup" | "playing" | "roundEnd" | "gameE
 
 export type TurnPhase = "idle" | "spinning" | "spinResult" | "guessing" | "buyingVowel" | "solving" | "roundComplete";
 
+export type FeedEventType =
+  | "spin"
+  | "bankrupt"
+  | "loseTurn"
+  | "correctGuess"
+  | "wrongGuess"
+  | "buyVowel"
+  | "solve"
+  | "wrongSolve"
+  | "turnChange"
+  | "roundWin"
+  | "info";
+
+export interface FeedEntry {
+  id: number;
+  type: FeedEventType;
+  text: string;
+}
+
 export interface GameState {
   phase: GamePhase;
   turnPhase: TurnPhase;
@@ -48,6 +67,21 @@ export interface GameState {
   roundNumber: number;
   roundWinner: Player | null;
   message: string;
+  feedEvents: FeedEntry[];
+  feedCounter: number;
+}
+
+export const MAX_FEED_EVENTS = 30;
+
+export function addFeedEvent(
+  prev: { feedEvents: FeedEntry[]; feedCounter: number },
+  type: FeedEventType,
+  text: string,
+): { feedEvents: FeedEntry[]; feedCounter: number } {
+  const nextId = prev.feedCounter + 1;
+  const newEntry: FeedEntry = { id: nextId, type, text };
+  const updated = [newEntry, ...prev.feedEvents].slice(0, MAX_FEED_EVENTS);
+  return { feedEvents: updated, feedCounter: nextId };
 }
 
 export function getSegmentLabel(segment: WheelResult): string {

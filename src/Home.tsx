@@ -4,6 +4,7 @@ import { RoundSetup } from "./components/game/RoundSetup";
 import { GameScreen } from "./components/game/GameScreen";
 import { RoundEnd } from "./components/game/RoundEnd";
 import type { GameState } from "./components/game/types";
+import { addFeedEvent } from "./components/game/types";
 
 const initialGameState: GameState = {
   phase: "setup",
@@ -19,6 +20,8 @@ const initialGameState: GameState = {
   roundNumber: 1,
   roundWinner: null,
   message: "",
+  feedEvents: [],
+  feedCounter: 0,
 };
 
 export const Home = () => {
@@ -37,25 +40,37 @@ export const Home = () => {
       phase: "roundSetup",
       players,
       message: `${players[0].name}'s turn`,
+      feedEvents: [],
+      feedCounter: 0,
     });
   }, []);
 
   // Start a new round
   const handleStartRound = useCallback((phrase: string, category: string) => {
-    setGameState(prev => ({
-      ...prev,
-      phase: "playing",
-      turnPhase: "idle",
-      phrase,
-      category,
-      revealedLetters: new Set(),
-      guessedLetters: new Set(),
-      currentWheelValue: 0,
-      currentSpinResult: null,
-      roundWinner: null,
-      players: prev.players.map(p => ({ ...p, roundScore: 0 })),
-      message: `${prev.players[prev.currentPlayerIndex].name}'s turn — spin the wheel!`,
-    }));
+    setGameState(prev => {
+      const msg = `${prev.players[prev.currentPlayerIndex].name}'s turn — spin the wheel!`;
+      const feed = addFeedEvent(
+        { feedEvents: [], feedCounter: 0 },
+        "info",
+        `Round ${prev.roundNumber} started — "${category}"`,
+      );
+      return {
+        ...prev,
+        phase: "playing",
+        turnPhase: "idle",
+        phrase,
+        category,
+        revealedLetters: new Set(),
+        guessedLetters: new Set(),
+        currentWheelValue: 0,
+        currentSpinResult: null,
+        roundWinner: null,
+        players: prev.players.map(p => ({ ...p, roundScore: 0 })),
+        message: msg,
+        feedEvents: feed.feedEvents,
+        feedCounter: feed.feedCounter,
+      };
+    });
   }, []);
 
   // Start new round after round end
@@ -86,6 +101,8 @@ export const Home = () => {
       roundWinner: null,
       players: prev.players.map(p => ({ ...p, roundScore: 0 })),
       message: "",
+      feedEvents: [],
+      feedCounter: 0,
     }));
   }, []);
 

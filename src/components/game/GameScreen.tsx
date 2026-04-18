@@ -4,7 +4,8 @@ import { PuzzleBoard } from "./PuzzleBoard";
 import { Scoreboard } from "./Scoreboard";
 import { HostControls } from "./HostControls";
 import { SessionControls } from "./SessionControls";
-import { VOWELS, type GameState, type WheelResult } from "./types";
+import { EventFeed } from "./EventFeed";
+import { VOWELS, addFeedEvent, type GameState, type WheelResult } from "./types";
 import { playDingSound, playBuzzerSound, playApplauseSound } from "./sounds";
 
 interface GameScreenProps {
@@ -33,13 +34,20 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
   // Advance to next player
   const nextPlayer = useCallback(() => {
     setBuyingVowel(false);
-    setGameState(prev => ({
-      ...prev,
-      currentPlayerIndex: (prev.currentPlayerIndex + 1) % prev.players.length,
-      turnPhase: "idle",
-      currentSpinResult: null,
-      message: `${prev.players[(prev.currentPlayerIndex + 1) % prev.players.length].name}'s turn`,
-    }));
+    setGameState(prev => {
+      const nextIdx = (prev.currentPlayerIndex + 1) % prev.players.length;
+      const nextName = prev.players[nextIdx].name;
+      const msg = `${nextName}'s turn`;
+      const feed = addFeedEvent(prev, "turnChange", `${nextName}'s turn`);
+      return {
+        ...prev,
+        currentPlayerIndex: nextIdx,
+        turnPhase: "idle",
+        currentSpinResult: null,
+        message: msg,
+        ...feed,
+      };
+    });
   }, [setGameState]);
 
   // Win round
@@ -60,12 +68,15 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
           }
           return p;
         });
+        const winMsg = `${updatedPlayers[playerIndex].name} wins the round!`;
+        const feed = addFeedEvent(prev, "roundWin", winMsg);
         return {
           ...prev,
           players: updatedPlayers,
           phase: "roundEnd",
           roundWinner: updatedPlayers[playerIndex],
-          message: `${updatedPlayers[playerIndex].name} wins the round!`,
+          message: winMsg,
+          ...feed,
         };
       });
     },
@@ -83,6 +94,7 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
       message: `${currentPlayer.name} is spinning...`,
     }));
   }, [spinning, gameState.turnPhase, currentPlayer, setGameState]);
+  // Note: spin start doesn't add a feed event — the result does
 
   // Handle spin complete
   const handleSpinComplete = useCallback(
@@ -98,12 +110,15 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
             }
             return p;
           });
+          const msg = `BANKRUPT! ${currentPlayer.name} loses all round earnings`;
+          const feed = addFeedEvent(prev, "bankrupt", `${currentPlayer.name}: BANKRUPT! Lost all round earnings`);
           return {
             ...prev,
             players: updatedPlayers,
             turnPhase: "idle",
             currentSpinResult: result,
-            message: `BANKRUPT! ${currentPlayer.name} loses all round earnings`,
+            message: msg,
+            ...feed,
           };
         });
         setTimeout(nextPlayer, 1500);
@@ -112,24 +127,34 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
 
       if (result.type === "loseTurn") {
         playBuzzerSound();
-        setGameState(prev => ({
-          ...prev,
-          turnPhase: "idle",
-          currentSpinResult: result,
-          message: `LOSE A TURN! ${currentPlayer.name}'s turn is over`,
-        }));
+        setGameState(prev => {
+          const msg = `LOSE A TURN! ${currentPlayer.name}'s turn is over`;
+          const feed = addFeedEvent(prev, "loseTurn", `${currentPlayer.name}: LOSE A TURN`);
+          return {
+            ...prev,
+            turnPhase: "idle",
+            currentSpinResult: result,
+            message: msg,
+            ...feed,
+          };
+        });
         setTimeout(nextPlayer, 1500);
         return;
       }
 
       // Money result — wait for consonant guess
-      setGameState(prev => ({
-        ...prev,
-        turnPhase: "guessing",
-        currentSpinResult: result,
-        currentWheelValue: result.value,
-        message: `$${result.value}! ${currentPlayer.name}, pick a consonant`,
-      }));
+      setGameState(prev => {
+        const msg = `$${result.value}! ${currentPlayer.name}, pick a consonant`;
+        const feed = addFeedEvent(prev, "spin", `${currentPlayer.name} spun $${result.value}`);
+        return {
+          ...prev,
+          turnPhase: "guessing",
+          currentSpinResult: result,
+          currentWheelValue: result.value,
+          message: msg,
+          ...feed,
+        };
+      });
     },
     [currentPlayer, nextPlayer, setGameState],
   );
@@ -164,6 +189,8 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
               }
               return p;
             });
+            const msg = `${upperLetter} is in the puzzle! (${count} time${count > 1 ? "s" : ""})`;
+            const feed = addFeedEvent(prev, "buyVowel", `${currentPlayer.name} bought ${upperLetter} — ${count} found`);
             return {
               ...prev,
               players: updatedPlayers,
@@ -171,7 +198,8 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
               guessedLetters: newGuessed,
               turnPhase: allRevealed ? "roundComplete" : "idle",
               currentSpinResult: null,
-              message: `${upperLetter} is in the puzzle! (${count} time${count > 1 ? "s" : ""})`,
+              message: msg,
+              ...feed,
             };
           });
           setBuyingVowel(false);
@@ -189,13 +217,20 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
               }
               return p;
             });
+            const msg = `No ${upperLetter} in the puzzle. Turn lost`;
+            const feed = addFeedEvent(
+              prev,
+              "wrongGuess",
+              `${currentPlayer.name} bought ${upperLetter} — not in puzzle`,
+            );
             return {
               ...prev,
               players: updatedPlayers,
               guessedLetters: newGuessed,
               turnPhase: "idle",
               currentSpinResult: null,
-              message: `No ${upperLetter} in the puzzle. Turn lost`,
+              message: msg,
+              ...feed,
             };
           });
           setBuyingVowel(false);
@@ -229,6 +264,12 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
               }
               return p;
             });
+            const msg = `${count} ${upperLetter}${count > 1 ? "'s" : ""}! +$${earned.toLocaleString()}`;
+            const feed = addFeedEvent(
+              prev,
+              "correctGuess",
+              `${currentPlayer.name} guessed ${upperLetter} — ${count} found, +$${earned.toLocaleString()}`,
+            );
             return {
               ...prev,
               players: updatedPlayers,
@@ -236,7 +277,8 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
               guessedLetters: newGuessed,
               turnPhase: allRevealed ? "roundComplete" : "idle",
               currentSpinResult: null,
-              message: `${count} ${upperLetter}${count > 1 ? "'s" : ""}! +$${earned.toLocaleString()}`,
+              message: msg,
+              ...feed,
             };
           });
 
@@ -246,13 +288,22 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
           }
         } else {
           playBuzzerSound();
-          setGameState(prev => ({
-            ...prev,
-            guessedLetters: newGuessed,
-            turnPhase: "idle",
-            currentSpinResult: null,
-            message: `No ${upperLetter} in the puzzle`,
-          }));
+          setGameState(prev => {
+            const msg = `No ${upperLetter} in the puzzle`;
+            const feed = addFeedEvent(
+              prev,
+              "wrongGuess",
+              `${currentPlayer.name} guessed ${upperLetter} — not in puzzle`,
+            );
+            return {
+              ...prev,
+              guessedLetters: newGuessed,
+              turnPhase: "idle",
+              currentSpinResult: null,
+              message: msg,
+              ...feed,
+            };
+          });
           setTimeout(nextPlayer, 1200);
         }
       }
@@ -265,6 +316,7 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
       gameState.turnPhase,
       gameState.currentWheelValue,
       gameState.currentPlayerIndex,
+      currentPlayer.name,
       nextPlayer,
       winRound,
       checkAllRevealed,
@@ -281,6 +333,7 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
       message: `${currentPlayer.name} is buying a vowel ($250). Pick one!`,
     }));
   }, [currentPlayer, setGameState]);
+  // Note: buy vowel toggle doesn't add a feed event — the vowel pick result does
 
   // Handle solve
   const handleSolve = useCallback(
@@ -304,21 +357,31 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
         setTimeout(() => setNewlyRevealed([]), 2000);
 
         // Immediately mark the round as complete to disable all host controls
-        setGameState(prev => ({
-          ...prev,
-          revealedLetters: allLetters,
-          turnPhase: "roundComplete",
-          message: `${currentPlayer.name} solved it!`,
-        }));
+        setGameState(prev => {
+          const msg = `${currentPlayer.name} solved it!`;
+          const feed = addFeedEvent(prev, "solve", `${currentPlayer.name} solved the puzzle!`);
+          return {
+            ...prev,
+            revealedLetters: allLetters,
+            turnPhase: "roundComplete",
+            message: msg,
+            ...feed,
+          };
+        });
 
         setTimeout(() => winRound(gameState.currentPlayerIndex), 1200);
       } else {
         playBuzzerSound();
-        setGameState(prev => ({
-          ...prev,
-          turnPhase: "idle",
-          message: `Wrong answer! The puzzle is not "${normalizedGuess}"`,
-        }));
+        setGameState(prev => {
+          const msg = `Wrong answer! The puzzle is not "${normalizedGuess}"`;
+          const feed = addFeedEvent(prev, "wrongSolve", `${currentPlayer.name} guessed "${normalizedGuess}" — wrong!`);
+          return {
+            ...prev,
+            turnPhase: "idle",
+            message: msg,
+            ...feed,
+          };
+        });
         setTimeout(nextPlayer, 1500);
       }
     },
@@ -352,17 +415,19 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
 
       {/* Main area */}
       <div className="flex-1 flex min-h-0">
-        {/* Left: Wheel (20%) */}
-        <div
-          className="flex flex-col items-center justify-center"
-          style={{ width: "22%", padding: "24px 16px", boxSizing: "border-box" }}
-        >
-          <Wheel
-            onSpinComplete={handleSpinComplete}
-            spinning={spinning}
-            onSpinStart={handleSpinStart}
-            disabled={!canSpin}
-          />
+        {/* Left: Wheel + Event Feed (22%) */}
+        <div className="flex flex-col" style={{ width: "22%", padding: "24px 16px", boxSizing: "border-box", gap: 16 }}>
+          <div className="flex items-center justify-center" style={{ flexShrink: 0 }}>
+            <Wheel
+              onSpinComplete={handleSpinComplete}
+              spinning={spinning}
+              onSpinStart={handleSpinStart}
+              disabled={!canSpin}
+            />
+          </div>
+          <div className="flex-1 min-h-0">
+            <EventFeed events={gameState.feedEvents} />
+          </div>
         </div>
 
         {/* Center: Puzzle Board (50-60%) */}

@@ -27,7 +27,8 @@ export function HostControls({
   const [solveGuess, setSolveGuess] = useState("");
 
   const currentPlayer = gameState.players[gameState.currentPlayerIndex];
-  const canBuyVowel = currentPlayer && currentPlayer.roundScore >= 250;
+  const hasUnguessedVowels = ["A", "E", "I", "O", "U"].some(v => !gameState.guessedLetters.has(v));
+  const canBuyVowel = currentPlayer && hasUnguessedVowels;
   const isRoundComplete = turnPhase === "roundComplete";
 
   const letterBoardDisabled = isRoundComplete || (turnPhase !== "guessing" && turnPhase !== "buyingVowel");

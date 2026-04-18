@@ -40,7 +40,19 @@ export const WHEEL_SEGMENTS: WheelResult[] = [
 
 export const VOWELS = new Set(["A", "E", "I", "O", "U"]);
 
-export type GamePhase = "setup" | "roundSetup" | "playing" | "roundEnd" | "gameEnd";
+export type GamePhase = "setup" | "roundSetup" | "playing" | "roundEnd" | "gameEnd" | "finalRoundSetup" | "finalRound";
+
+export const FINAL_ROUND_FREE_LETTERS = new Set(["R", "S", "T", "L", "N", "E"]);
+
+export type FinalRoundPhase = "picking" | "solving" | "result";
+
+export interface FinalRoundState {
+  finalist: Player;
+  consonantPicks: number; // starts at 3
+  vowelPicks: number; // starts at 1
+  phase: FinalRoundPhase;
+  solved: boolean | null; // null = not yet attempted
+}
 
 export type TurnPhase = "idle" | "spinning" | "spinResult" | "guessing" | "buyingVowel" | "solving" | "roundComplete";
 
@@ -79,6 +91,7 @@ export interface GameState {
   message: string;
   feedEvents: FeedEntry[];
   feedCounter: number;
+  finalRound: FinalRoundState | null;
 }
 
 export const MAX_FEED_EVENTS = 30;

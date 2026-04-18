@@ -3,8 +3,10 @@ import { SetupScreen } from "./components/game/SetupScreen";
 import { RoundSetup } from "./components/game/RoundSetup";
 import { GameScreen } from "./components/game/GameScreen";
 import { RoundEnd } from "./components/game/RoundEnd";
+import { FinalRoundSetup } from "./components/game/FinalRoundSetup";
+import { FinalRoundScreen } from "./components/game/FinalRoundScreen";
 import type { GameState } from "./components/game/types";
-import { addFeedEvent, PLAYER_COLORS } from "./components/game/types";
+import { addFeedEvent, PLAYER_COLORS, FINAL_ROUND_FREE_LETTERS } from "./components/game/types";
 
 const initialGameState: GameState = {
   phase: "setup",
@@ -22,6 +24,7 @@ const initialGameState: GameState = {
   message: "",
   feedEvents: [],
   feedCounter: 0,
+  finalRound: null,
 };
 
 export const Home = () => {
@@ -107,6 +110,71 @@ export const Home = () => {
     }));
   }, []);
 
+  // Go to final round setup
+  const handleFinalRound = useCallback(() => {
+    setGameState(prev => {
+      // Find the player with the highest total score
+      const sorted = [...prev.players].sort((a, b) => b.totalScore - a.totalScore);
+      const finalist = sorted[0];
+      return {
+        ...prev,
+        phase: "finalRoundSetup" as const,
+        finalRound: {
+          finalist,
+          consonantPicks: 3,
+          vowelPicks: 1,
+          phase: "picking" as const,
+          solved: null,
+        },
+      };
+    });
+  }, []);
+
+  // Start the final round gameplay
+  const handleStartFinalRound = useCallback((phrase: string, category: string) => {
+    setGameState(prev => {
+      if (!prev.finalRound) return prev;
+
+      // Pre-reveal R, S, T, L, N, E
+      const revealedLetters = new Set<string>();
+      const phraseUpper = phrase.toUpperCase();
+      FINAL_ROUND_FREE_LETTERS.forEach(letter => {
+        if (phraseUpper.includes(letter)) {
+          revealedLetters.add(letter);
+        }
+      });
+
+      // Mark free letters as guessed so they show as used on the letter board
+      const guessedLetters = new Set<string>(FINAL_ROUND_FREE_LETTERS);
+
+      return {
+        ...prev,
+        phase: "finalRound" as const,
+        phrase,
+        category,
+        revealedLetters,
+        guessedLetters,
+        message: `${prev.finalRound.finalist.name}, pick 3 consonants and 1 vowel`,
+        finalRound: {
+          ...prev.finalRound,
+          consonantPicks: 3,
+          vowelPicks: 1,
+          phase: "picking" as const,
+          solved: null,
+        },
+      };
+    });
+  }, []);
+
+  // Cancel final round setup — go back to round end
+  const handleCancelFinalRound = useCallback(() => {
+    setGameState(prev => ({
+      ...prev,
+      phase: "roundEnd" as const,
+      finalRound: null,
+    }));
+  }, []);
+
   // Full reset: go all the way back to setup screen
   const handleFullReset = useCallback(() => {
     setGameState(initialGameState);
@@ -148,7 +216,20 @@ export const Home = () => {
           players={gameState.players}
           onNewRound={handleNewRound}
           onEndGame={handleFullReset}
+          onFinalRound={handleFinalRound}
         />
+      )}
+
+      {gameState.phase === "finalRoundSetup" && gameState.finalRound && (
+        <FinalRoundSetup
+          finalist={gameState.finalRound.finalist}
+          onStartFinalRound={handleStartFinalRound}
+          onCancel={handleCancelFinalRound}
+        />
+      )}
+
+      {gameState.phase === "finalRound" && gameState.finalRound && (
+        <FinalRoundScreen gameState={gameState} setGameState={setGameState} onEndGame={handleFullReset} />
       )}
     </>
   );

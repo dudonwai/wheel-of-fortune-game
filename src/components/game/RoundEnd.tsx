@@ -17,9 +17,10 @@ interface RoundEndProps {
   players: Player[];
   onNewRound: () => void;
   onEndGame: () => void;
+  onFinalRound: () => void;
 }
 
-export function RoundEnd({ winner, phrase, players, onNewRound, onEndGame }: RoundEndProps) {
+export function RoundEnd({ winner, phrase, players, onNewRound, onEndGame, onFinalRound }: RoundEndProps) {
   const [fullResetDialogOpen, setFullResetDialogOpen] = useState(false);
 
   return (
@@ -163,6 +164,26 @@ export function RoundEnd({ winner, phrase, players, onNewRound, onEndGame }: Rou
             ))}
         </div>
 
+        {/* Final Round button */}
+        <button
+          onClick={onFinalRound}
+          className="w-full py-4 rounded transition-all"
+          style={{
+            fontFamily: "Oswald, sans-serif",
+            fontSize: 28,
+            fontWeight: 700,
+            textTransform: "uppercase",
+            letterSpacing: "0.04em",
+            background: "linear-gradient(135deg, #F5C518 0%, #FFD700 50%, #F5C518 100%)",
+            color: "#0A1628",
+            border: "2px solid rgba(245, 197, 24, 0.6)",
+            cursor: "pointer",
+            boxShadow: "0 0 20px rgba(245, 197, 24, 0.3)",
+          }}
+        >
+          Final Round
+        </button>
+
         {/* Buttons */}
         <div className="w-full flex gap-3">
           <button
@@ -174,9 +195,9 @@ export function RoundEnd({ winner, phrase, players, onNewRound, onEndGame }: Rou
               fontWeight: 700,
               textTransform: "uppercase",
               letterSpacing: "0.04em",
-              backgroundColor: "#F5C518",
-              color: "#0A1628",
-              border: "none",
+              backgroundColor: "rgba(255,255,255,0.1)",
+              color: "rgba(255,255,255,0.7)",
+              border: "1px solid rgba(255,255,255,0.15)",
               cursor: "pointer",
             }}
           >

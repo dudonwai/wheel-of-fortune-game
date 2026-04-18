@@ -65,14 +65,15 @@ export function PuzzleBoard({ phrase, revealedLetters, category, newlyRevealed }
     });
   }, [newlyRevealed, phrase]);
 
-  // Split phrase into lines for display (max ~14 chars per row)
+  // Split phrase into lines for display (max ~18 chars per row to fit 4 rows max at 52 chars)
+  const MAX_CHARS_PER_ROW = 18;
   const words = phrase.split(" ");
   const lines: string[][] = [];
   let currentLine: string[] = [];
   let currentLength = 0;
 
   words.forEach(word => {
-    if (currentLength + word.length + (currentLine.length > 0 ? 1 : 0) > 14 && currentLine.length > 0) {
+    if (currentLength + word.length + (currentLine.length > 0 ? 1 : 0) > MAX_CHARS_PER_ROW && currentLine.length > 0) {
       lines.push(currentLine);
       currentLine = [word];
       currentLength = word.length;

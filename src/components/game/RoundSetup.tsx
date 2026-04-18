@@ -23,6 +23,8 @@ export function RoundSetup({ roundNumber, onStartRound, onFullReset, players }: 
   const [category, setCategory] = useState("");
   const [fullResetDialogOpen, setFullResetDialogOpen] = useState(false);
 
+  const MAX_CATEGORY = 40;
+  const MAX_PHRASE = 52;
   const canStart = phrase.trim().length >= 2 && category.trim().length >= 1;
 
   const handleStart = () => {
@@ -90,7 +92,8 @@ export function RoundSetup({ roundNumber, onStartRound, onFullReset, players }: 
             id="round-category"
             type="text"
             value={category}
-            onChange={e => setCategory(e.target.value)}
+            onChange={e => setCategory(e.target.value.slice(0, MAX_CATEGORY))}
+            maxLength={MAX_CATEGORY}
             placeholder={'e.g. "Before and After"'}
             className="w-full px-4 py-3 rounded"
             style={{
@@ -103,6 +106,18 @@ export function RoundSetup({ roundNumber, onStartRound, onFullReset, players }: 
               outline: "none",
             }}
           />
+          <div
+            style={{
+              fontFamily: "Archivo, sans-serif",
+              fontSize: 12,
+              fontWeight: 500,
+              color: category.length >= MAX_CATEGORY ? "#F87171" : "rgba(255,255,255,0.3)",
+              textAlign: "right",
+              marginTop: 4,
+            }}
+          >
+            {category.length}/{MAX_CATEGORY}
+          </div>
         </div>
 
         {/* Phrase input */}
@@ -126,7 +141,8 @@ export function RoundSetup({ roundNumber, onStartRound, onFullReset, players }: 
             id="round-phrase"
             type="text"
             value={phrase}
-            onChange={e => setPhrase(e.target.value)}
+            onChange={e => setPhrase(e.target.value.slice(0, MAX_PHRASE))}
+            maxLength={MAX_PHRASE}
             placeholder={'e.g. "A STITCH IN TIME"'}
             className="w-full px-4 py-3 rounded"
             style={{
@@ -144,6 +160,18 @@ export function RoundSetup({ roundNumber, onStartRound, onFullReset, players }: 
               }
             }}
           />
+          <div
+            style={{
+              fontFamily: "Archivo, sans-serif",
+              fontSize: 12,
+              fontWeight: 500,
+              color: phrase.length >= MAX_PHRASE ? "#F87171" : "rgba(255,255,255,0.3)",
+              textAlign: "right",
+              marginTop: 4,
+            }}
+          >
+            {phrase.length}/{MAX_PHRASE}
+          </div>
         </div>
 
         {/* Session scores (show if not round 1) */}

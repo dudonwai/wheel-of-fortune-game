@@ -4,7 +4,7 @@ import { RoundSetup } from "./components/game/RoundSetup";
 import { GameScreen } from "./components/game/GameScreen";
 import { RoundEnd } from "./components/game/RoundEnd";
 import type { GameState } from "./components/game/types";
-import { addFeedEvent } from "./components/game/types";
+import { addFeedEvent, PLAYER_COLORS } from "./components/game/types";
 
 const initialGameState: GameState = {
   phase: "setup",
@@ -34,6 +34,7 @@ export const Home = () => {
       name,
       roundScore: 0,
       totalScore: 0,
+      color: PLAYER_COLORS[i % PLAYER_COLORS.length],
     }));
     setGameState({
       ...initialGameState,

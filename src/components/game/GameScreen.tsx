@@ -1,7 +1,6 @@
 import { useState, useCallback } from "react";
 import { Wheel } from "./Wheel";
 import { PuzzleBoard } from "./PuzzleBoard";
-import { Scoreboard } from "./Scoreboard";
 import { HostControls } from "./HostControls";
 import { SessionControls } from "./SessionControls";
 import { EventFeed } from "./EventFeed";
@@ -411,6 +410,8 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
         onNewGame={onNewGame}
         onFullReset={onFullReset}
         roundNumber={gameState.roundNumber}
+        players={gameState.players}
+        currentPlayerIndex={gameState.currentPlayerIndex}
       />
 
       {/* Main 3-column layout */}
@@ -426,27 +427,23 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
           }}
         >
           <div className="flex-1 flex flex-col min-h-0 overflow-y-auto">
-            {/* Scoreboard */}
+            {/* Spin the Wheel button — colored by current player */}
             <div style={{ flexShrink: 0, padding: "12px 12px 8px" }}>
-              <Scoreboard players={gameState.players} currentPlayerIndex={gameState.currentPlayerIndex} />
-            </div>
-
-            {/* Spin the Wheel button */}
-            <div style={{ flexShrink: 0, padding: "4px 12px 8px" }}>
               <button
                 onClick={handleSpinStart}
                 disabled={!canSpin || spinning}
                 className="w-full py-3 px-4 rounded font-bold text-base uppercase tracking-wider transition-all"
                 style={{
                   fontFamily: "Oswald, sans-serif",
-                  backgroundColor: !canSpin || spinning ? "#333" : "#F5C518",
-                  color: !canSpin || spinning ? "#666" : "#0A1628",
+                  backgroundColor: !canSpin || spinning ? "#333" : currentPlayer.color,
+                  color: !canSpin || spinning ? "#666" : "#FFFFFF",
                   cursor: !canSpin || spinning ? "not-allowed" : "pointer",
                   letterSpacing: "0.04em",
                   fontSize: 16,
+                  transition: "background-color 0.3s ease",
                 }}
               >
-                {spinning ? "Spinning..." : "Spin the Wheel"}
+                {spinning ? "Spinning..." : `Spin the Wheel`}
               </button>
             </div>
 

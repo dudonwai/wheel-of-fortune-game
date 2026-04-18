@@ -1,10 +1,20 @@
 // Wheel of Fortune game types
 
+export const PLAYER_COLORS = [
+  "#E8339E", // pink
+  "#3B82F6", // blue
+  "#059669", // green
+  "#F59E0B", // amber
+  "#8B5CF6", // purple
+  "#EF4444", // red
+];
+
 export interface Player {
   id: string;
   name: string;
   roundScore: number;
   totalScore: number;
+  color: string;
 }
 
 export type WheelResult = { type: "money"; value: number } | { type: "bankrupt" } | { type: "loseTurn" };

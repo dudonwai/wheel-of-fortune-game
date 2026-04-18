@@ -461,21 +461,24 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
           </div>
         </div>
 
-        {/* Middle: Wheel + Puzzle Board (~60%) */}
-        <div className="flex-1 flex flex-col items-center" style={{ padding: "16px 24px" }}>
-          {/* Wheel */}
-          <div className="flex items-center justify-center" style={{ flexShrink: 0, padding: "0 0 12px" }}>
+        {/* Middle: Wheel + Puzzle Board (~60%), 2:1 vertical ratio */}
+        <div className="flex-1 flex flex-col items-center" style={{ padding: "8px 24px", minWidth: 0 }}>
+          {/* Wheel — 2/3 of vertical space */}
+          <div
+            className="flex items-center justify-center"
+            style={{ flex: 2, minHeight: 0, width: "100%", padding: "0 0 8px" }}
+          >
             <Wheel
               onSpinComplete={handleSpinComplete}
               spinning={spinning}
               onSpinStart={handleSpinStart}
               disabled={!canSpin}
-              size={412}
+              size={600}
               hideButton
             />
           </div>
-          {/* Puzzle Board */}
-          <div className="flex-1 flex flex-col items-center justify-center">
+          {/* Puzzle Board — 1/3 of vertical space */}
+          <div className="flex flex-col items-center justify-center" style={{ flex: 1, minHeight: 0, width: "100%" }}>
             <PuzzleBoard
               phrase={gameState.phrase}
               revealedLetters={gameState.revealedLetters}

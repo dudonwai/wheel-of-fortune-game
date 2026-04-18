@@ -177,13 +177,21 @@ export function Wheel({ onSpinComplete, spinning, onSpinStart, disabled, size, h
   return (
     <div
       className="flex flex-col items-center gap-3"
-      style={{ width: "100%", maxWidth: CANVAS_SIZE + 16, padding: "0 8px", boxSizing: "border-box" }}
+      style={{
+        width: "100%",
+        height: "100%",
+        padding: "0 8px",
+        boxSizing: "border-box",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
     >
       <canvas
         ref={canvasRef}
         width={CANVAS_SIZE}
         height={CANVAS_SIZE}
-        style={{ width: "100%", maxWidth: CANVAS_SIZE, height: "auto", aspectRatio: "1 / 1" }}
+        style={{ width: "100%", maxWidth: CANVAS_SIZE, maxHeight: "100%", objectFit: "contain", aspectRatio: "1 / 1" }}
         aria-label="Wheel of Fortune spinning wheel"
       />
       {!hideButton && (

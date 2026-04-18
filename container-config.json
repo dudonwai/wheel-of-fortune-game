@@ -1,3 +1,14 @@
 {
-  "temporaryCsp": {}
+  "temporaryCsp": {
+    "CONNECT_SRC": [
+      "https://fonts.googleapis.com",
+      "https://fonts.gstatic.com"
+    ],
+    "STYLE_SRC": [
+      "https://fonts.googleapis.com"
+    ],
+    "FONT_SRC": [
+      "https://fonts.gstatic.com"
+    ]
+  }
 }

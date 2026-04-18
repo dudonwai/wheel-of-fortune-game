@@ -1,0 +1,214 @@
+import { useState } from "react";
+import { LetterBoard } from "./LetterBoard";
+import type { GameState, TurnPhase, WheelResult } from "./types";
+
+interface HostControlsProps {
+  gameState: GameState;
+  onLetterClick: (letter: string) => void;
+  onBuyVowelToggle: () => void;
+  onSolve: (guess: string) => void;
+  onNextPlayer: () => void;
+  buyingVowel: boolean;
+  currentSpinResult: WheelResult | null;
+  turnPhase: TurnPhase;
+}
+
+export function HostControls({
+  gameState,
+  onLetterClick,
+  onBuyVowelToggle,
+  onSolve,
+  onNextPlayer,
+  buyingVowel,
+  currentSpinResult,
+  turnPhase,
+}: HostControlsProps) {
+  const [solveMode, setSolveMode] = useState(false);
+  const [solveGuess, setSolveGuess] = useState("");
+
+  const currentPlayer = gameState.players[gameState.currentPlayerIndex];
+  const canBuyVowel = currentPlayer && currentPlayer.roundScore >= 250;
+
+  const letterBoardDisabled = turnPhase !== "guessing" && turnPhase !== "buyingVowel";
+
+  const handleSolveSubmit = () => {
+    onSolve(solveGuess);
+    setSolveGuess("");
+    setSolveMode(false);
+  };
+
+  const isSpinResultMoney = currentSpinResult && currentSpinResult.type === "money";
+
+  return (
+    <div className="flex flex-col gap-3 h-full overflow-y-auto" style={{ padding: "16px 12px" }}>
+      {/* Status message */}
+      <div
+        className="text-center px-3 py-2 rounded"
+        style={{
+          fontFamily: "Archivo, sans-serif",
+          fontSize: 14,
+          fontWeight: 500,
+          color: "#F5C518",
+          backgroundColor: "rgba(245, 197, 24, 0.08)",
+          border: "1px solid rgba(245, 197, 24, 0.15)",
+          minHeight: 40,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {gameState.message}
+      </div>
+
+      {/* Spin result display */}
+      {currentSpinResult && turnPhase === "guessing" && isSpinResultMoney && (
+        <div
+          className="text-center py-2 rounded"
+          style={{
+            fontFamily: "Oswald, sans-serif",
+            fontSize: 24,
+            fontWeight: 700,
+            color: "#F5C518",
+            letterSpacing: "0.04em",
+          }}
+        >
+          ${currentSpinResult.value} per letter
+        </div>
+      )}
+
+      {/* Letter board */}
+      <LetterBoard
+        guessedLetters={gameState.guessedLetters}
+        onLetterClick={onLetterClick}
+        disabled={letterBoardDisabled}
+        buyingVowel={buyingVowel}
+      />
+
+      {/* Action buttons */}
+      <div className="flex flex-col gap-2 mt-2">
+        {/* Buy a Vowel */}
+        <button
+          onClick={onBuyVowelToggle}
+          disabled={!canBuyVowel || turnPhase === "spinning" || turnPhase === "solving" || buyingVowel}
+          className="w-full py-2 px-3 rounded font-bold text-sm transition-all"
+          style={{
+            fontFamily: "Archivo, sans-serif",
+            fontSize: 14,
+            fontWeight: 600,
+            letterSpacing: "0.04em",
+            textTransform: "uppercase",
+            backgroundColor: buyingVowel
+              ? "#F5C518"
+              : canBuyVowel && turnPhase !== "spinning"
+                ? "rgba(245, 197, 24, 0.15)"
+                : "rgba(255,255,255,0.05)",
+            color: buyingVowel ? "#0A1628" : canBuyVowel ? "#F5C518" : "rgba(255,255,255,0.25)",
+            border: buyingVowel ? "1px solid #F5C518" : "1px solid rgba(245, 197, 24, 0.2)",
+            cursor: !canBuyVowel || turnPhase === "spinning" ? "not-allowed" : "pointer",
+          }}
+        >
+          {buyingVowel ? "Pick a Vowel..." : "Buy a Vowel ($250)"}
+        </button>
+
+        {/* Solve Puzzle */}
+        {!solveMode ? (
+          <button
+            onClick={() => setSolveMode(true)}
+            disabled={turnPhase === "spinning"}
+            className="w-full py-2 px-3 rounded font-bold text-sm transition-all"
+            style={{
+              fontFamily: "Archivo, sans-serif",
+              fontSize: 14,
+              fontWeight: 600,
+              letterSpacing: "0.04em",
+              textTransform: "uppercase",
+              backgroundColor: "rgba(255,255,255,0.1)",
+              color: turnPhase === "spinning" ? "rgba(255,255,255,0.25)" : "#FFFFFF",
+              border: "1px solid rgba(255,255,255,0.15)",
+              cursor: turnPhase === "spinning" ? "not-allowed" : "pointer",
+            }}
+          >
+            Solve Puzzle
+          </button>
+        ) : (
+          <div className="flex flex-col gap-2">
+            <input
+              type="text"
+              value={solveGuess}
+              onChange={e => setSolveGuess(e.target.value)}
+              placeholder="Type the player's answer..."
+              className="w-full px-3 py-2 rounded text-sm"
+              style={{
+                fontFamily: "Archivo, sans-serif",
+                fontSize: 14,
+                backgroundColor: "rgba(255,255,255,0.1)",
+                color: "#FFFFFF",
+                border: "1px solid rgba(255,255,255,0.2)",
+                outline: "none",
+              }}
+              onKeyDown={e => {
+                if (e.key === "Enter" && solveGuess.trim()) {
+                  handleSolveSubmit();
+                }
+              }}
+              // eslint-disable-next-line jsx-a11y/no-autofocus
+              autoFocus
+            />
+            <div className="flex gap-2">
+              <button
+                onClick={handleSolveSubmit}
+                disabled={!solveGuess.trim()}
+                className="flex-1 py-2 px-3 rounded font-bold text-sm transition-all"
+                style={{
+                  fontFamily: "Archivo, sans-serif",
+                  fontWeight: 600,
+                  backgroundColor: solveGuess.trim() ? "#059669" : "rgba(255,255,255,0.05)",
+                  color: solveGuess.trim() ? "#FFFFFF" : "rgba(255,255,255,0.3)",
+                  cursor: solveGuess.trim() ? "pointer" : "not-allowed",
+                }}
+              >
+                Submit
+              </button>
+              <button
+                onClick={() => {
+                  setSolveMode(false);
+                  setSolveGuess("");
+                }}
+                className="py-2 px-3 rounded text-sm transition-all"
+                style={{
+                  fontFamily: "Archivo, sans-serif",
+                  fontWeight: 500,
+                  backgroundColor: "rgba(255,255,255,0.05)",
+                  color: "rgba(255,255,255,0.6)",
+                  cursor: "pointer",
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Next Player */}
+        <button
+          onClick={onNextPlayer}
+          disabled={turnPhase === "spinning"}
+          className="w-full py-2 px-3 rounded font-bold text-sm transition-all"
+          style={{
+            fontFamily: "Archivo, sans-serif",
+            fontSize: 14,
+            fontWeight: 600,
+            letterSpacing: "0.04em",
+            textTransform: "uppercase",
+            backgroundColor: "rgba(255,255,255,0.05)",
+            color: turnPhase === "spinning" ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.6)",
+            border: "1px solid rgba(255,255,255,0.08)",
+            cursor: turnPhase === "spinning" ? "not-allowed" : "pointer",
+          }}
+        >
+          Next Player
+        </button>
+      </div>
+    </div>
+  );
+}

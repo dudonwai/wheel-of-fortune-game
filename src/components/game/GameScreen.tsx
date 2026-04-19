@@ -459,11 +459,11 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
         </div>
 
         {/* Middle: Wheel + Puzzle Board */}
-        <div className="flex-1 flex flex-col items-center order-1 md:order-2 shrink-0 md:shrink overflow-y-auto" style={{ padding: "16px 24px", minWidth: 0 }}>
+        <div className="flex flex-col items-center order-1 md:order-2 shrink-0 md:shrink md:flex-1 sticky md:static top-0 z-20 bg-[#0A1628] md:bg-transparent border-b md:border-b-0 border-white/10 md:border-transparent" style={{ padding: "12px 16px", minWidth: 0 }}>
           {/* Wheel */}
           <div
-            className="flex items-center justify-center shrink-0 w-full max-w-[600px] min-h-[350px] md:min-h-[450px]"
-            style={{ padding: "0 0 24px" }}
+            className="flex items-center justify-center shrink-0 w-full max-w-[600px] h-[180px] md:h-auto md:min-h-[450px]"
+            style={{ padding: "0 0 16px" }}
           >
             <Wheel
               onSpinComplete={handleSpinComplete}
@@ -475,7 +475,7 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
             />
           </div>
           {/* Puzzle Board */}
-          <div className="flex flex-col items-center justify-center w-full pb-8 shrink-0">
+          <div className="flex flex-col items-center justify-center w-full pb-4 md:pb-8 shrink-0">
             <PuzzleBoard
               phrase={gameState.phrase}
               revealedLetters={gameState.revealedLetters}

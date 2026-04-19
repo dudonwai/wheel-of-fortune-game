@@ -7,6 +7,7 @@ import { FinalRoundSetup } from "./components/game/FinalRoundSetup";
 import { FinalRoundScreen } from "./components/game/FinalRoundScreen";
 import type { GameState } from "./components/game/types";
 import { addFeedEvent, PLAYER_COLORS, FINAL_ROUND_FREE_LETTERS } from "./components/game/types";
+import { BackgroundMusic } from "./components/game/BackgroundMusic";
 
 const initialGameState: GameState = {
   phase: "setup",
@@ -182,6 +183,7 @@ export const Home = () => {
 
   return (
     <>
+      <BackgroundMusic />
       <style>{`
         @keyframes pulseGold {
           0%, 100% { border-bottom-color: #F5C518; }

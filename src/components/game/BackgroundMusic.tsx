@@ -31,7 +31,7 @@ export function BackgroundMusic() {
         ref={audioRef}
         loop
         src="/theme.mp3"
-        onError={(e) => {
+        onError={() => {
           console.warn("Audio failed to load. Please make sure you have placed a 'theme.mp3' file in your public folder!");
         }}
       />

@@ -65,27 +65,7 @@ export function PuzzleBoard({ phrase, revealedLetters, category, newlyRevealed }
     });
   }, [newlyRevealed, phrase]);
 
-  // Split phrase into lines for display (max ~18 chars per row to fit 4 rows max at 52 chars)
-  const MAX_CHARS_PER_ROW = 18;
   const words = phrase.split(" ");
-  const lines: string[][] = [];
-  let currentLine: string[] = [];
-  let currentLength = 0;
-
-  words.forEach(word => {
-    if (currentLength + word.length + (currentLine.length > 0 ? 1 : 0) > MAX_CHARS_PER_ROW && currentLine.length > 0) {
-      lines.push(currentLine);
-      currentLine = [word];
-      currentLength = word.length;
-    } else {
-      currentLine.push(word);
-      currentLength += word.length + (currentLine.length > 1 ? 1 : 0);
-    }
-  });
-  if (currentLine.length > 0) {
-    lines.push(currentLine);
-  }
-
   let globalCharIndex = 0;
 
   return (
@@ -108,37 +88,32 @@ export function PuzzleBoard({ phrase, revealedLetters, category, newlyRevealed }
       </div>
 
       {/* Puzzle tiles */}
-      <div className="flex flex-col items-center gap-1">
-        {lines.map((lineWords, lineIdx) => {
-          const lineChars: { char: string; globalIdx: number }[] = [];
-          lineWords.forEach((word, wordIdx) => {
-            if (wordIdx > 0) {
-              lineChars.push({ char: " ", globalIdx: globalCharIndex });
-              globalCharIndex++;
-            }
-            word.split("").forEach(ch => {
-              lineChars.push({ char: ch, globalIdx: globalCharIndex });
-              globalCharIndex++;
-            });
-          });
+      <div className="flex flex-wrap justify-center gap-y-2 gap-x-6 sm:gap-y-3 sm:gap-x-8 w-full max-w-full px-2">
+        {words.map((word, wordIdx) => {
+          // Account for the space before the word
+          if (wordIdx > 0) {
+            globalCharIndex++;
+          }
+          
+          const wordStartIndex = globalCharIndex;
+          globalCharIndex += word.length;
+          
+          // Don't render empty word containers if there were double spaces
+          if (word.length === 0) return null;
 
           return (
-            <div key={lineIdx} className="flex gap-1 justify-center">
-              {lineChars.map(({ char, globalIdx }) => {
+            <div key={wordIdx} className="flex flex-wrap justify-center gap-1">
+              {word.split("").map((char, charIdx) => {
                 const upperChar = char.toUpperCase();
                 const isLetter = /[A-Z]/.test(upperChar);
-                const isSpace = char === " ";
-
-                if (isSpace) {
-                  return <div key={globalIdx} className="w-3 sm:w-4 h-7 sm:h-9" />;
-                }
+                const currentGlobalIdx = wordStartIndex + charIdx;
 
                 if (!isLetter) {
                   // Punctuation — always revealed
                   return (
                     <div
-                      key={globalIdx}
-                      className="flex items-center justify-center w-6 h-7 sm:w-8 sm:h-9 text-base sm:text-lg"
+                      key={currentGlobalIdx}
+                      className="flex items-center justify-center w-6 h-7 sm:w-8 sm:h-9 text-base sm:text-lg shrink-0"
                       style={{
                         backgroundColor: "#FFFFFF",
                         borderRadius: 3,
@@ -153,14 +128,14 @@ export function PuzzleBoard({ phrase, revealedLetters, category, newlyRevealed }
                 }
 
                 const isRevealed = revealedLetters.has(upperChar);
-                const state = tileStates.get(globalIdx);
+                const state = tileStates.get(currentGlobalIdx);
                 const isFlipping = state?.flipping ?? false;
                 const isGlowing = state?.glowing ?? false;
 
                 return (
                   <div
-                    key={globalIdx}
-                    className="flex items-center justify-center w-6 h-7 sm:w-8 sm:h-9 text-base sm:text-lg"
+                    key={currentGlobalIdx}
+                    className="flex items-center justify-center w-6 h-7 sm:w-8 sm:h-9 text-base sm:text-lg shrink-0"
                     style={{
                       borderRadius: 3,
                       backgroundColor: isRevealed ? "#FFFFFF" : "#1B6B4A",

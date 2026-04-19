@@ -8,13 +8,6 @@ interface LetterBoardProps {
 }
 
 const ALL_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-const LETTERS_PER_ROW = 6;
-
-// Split into rows of 6
-const ROWS: string[][] = [];
-for (let i = 0; i < ALL_LETTERS.length; i += LETTERS_PER_ROW) {
-  ROWS.push(ALL_LETTERS.slice(i, i + LETTERS_PER_ROW));
-}
 
 export function LetterBoard({ guessedLetters, onLetterClick, disabled, buyingVowel }: LetterBoardProps) {
   const renderLetter = (letter: string) => {
@@ -30,13 +23,10 @@ export function LetterBoard({ guessedLetters, onLetterClick, disabled, buyingVow
         key={letter}
         onClick={() => !isDisabled && onLetterClick(letter)}
         disabled={isDisabled}
-        className="flex items-center justify-center rounded transition-all"
+        className="flex items-center justify-center rounded transition-all text-sm sm:text-base h-10 sm:h-[38px]"
         style={{
-          flex: "1 1 0",
           minWidth: 0,
-          height: 38,
           fontFamily: "Oswald, sans-serif",
-          fontSize: 17,
           fontWeight: 700,
           letterSpacing: "0.04em",
           textTransform: "uppercase",
@@ -64,17 +54,8 @@ export function LetterBoard({ guessedLetters, onLetterClick, disabled, buyingVow
   };
 
   return (
-    <div className="flex flex-col gap-1">
-      {ROWS.map((row, rowIdx) => (
-        <div key={rowIdx} className="flex gap-1">
-          {row.map(renderLetter)}
-          {/* Pad the last row so buttons stay the same width */}
-          {row.length < LETTERS_PER_ROW &&
-            Array.from({ length: LETTERS_PER_ROW - row.length }).map((_, i) => (
-              <div key={`pad-${i}`} style={{ flex: "1 1 0", minWidth: 0 }} />
-            ))}
-        </div>
-      ))}
+    <div className="grid grid-cols-7 sm:grid-cols-6 md:grid-cols-4 lg:grid-cols-6 gap-1 sm:gap-1.5">
+      {ALL_LETTERS.map(renderLetter)}
     </div>
   );
 }

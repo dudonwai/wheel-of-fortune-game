@@ -418,10 +418,9 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
       <div className="flex-1 flex flex-col md:flex-row min-h-0 overflow-y-auto md:overflow-hidden">
         {/* Left panel: Scores + Spin button + Host Controls (~20%) */}
         <div
-          className="flex flex-col min-h-0 w-full md:w-[20%] order-2 md:order-1 border-b md:border-b-0 md:border-r border-white/10 shrink-0"
+          className="flex flex-col min-h-0 w-full md:w-[20%] order-2 md:order-1 border-b md:border-b-0 md:border-r border-white/10 shrink-0 md:shrink"
           style={{
             minWidth: 220,
-            overflow: "hidden",
           }}
         >
           <div className="flex-1 flex flex-col min-h-0 overflow-y-auto">
@@ -459,12 +458,12 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
           </div>
         </div>
 
-        {/* Middle: Wheel + Puzzle Board (~60%), 2:1 vertical ratio */}
-        <div className="flex-1 flex flex-col items-center order-1 md:order-2 shrink-0 md:shrink" style={{ padding: "16px 24px", minWidth: 0, minHeight: "60vh" }}>
-          {/* Wheel — 2/3 of vertical space */}
+        {/* Middle: Wheel + Puzzle Board */}
+        <div className="flex-1 flex flex-col items-center order-1 md:order-2 shrink-0 md:shrink overflow-y-auto" style={{ padding: "16px 24px", minWidth: 0 }}>
+          {/* Wheel */}
           <div
-            className="flex items-center justify-center"
-            style={{ flex: 2, minHeight: 0, width: "100%", padding: "0 0 8px" }}
+            className="flex items-center justify-center shrink-0 w-full max-w-[600px] min-h-[350px] md:min-h-[450px]"
+            style={{ padding: "0 0 24px" }}
           >
             <Wheel
               onSpinComplete={handleSpinComplete}
@@ -475,8 +474,8 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
               hideButton
             />
           </div>
-          {/* Puzzle Board — 1/3 of vertical space */}
-          <div className="flex flex-col items-center justify-center" style={{ flex: 1, minHeight: 0, width: "100%" }}>
+          {/* Puzzle Board */}
+          <div className="flex flex-col items-center justify-center w-full pb-8 shrink-0">
             <PuzzleBoard
               phrase={gameState.phrase}
               revealedLetters={gameState.revealedLetters}
@@ -488,10 +487,9 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
 
         {/* Right panel: Event Feed (~20%) */}
         <div
-          className="flex flex-col min-h-0 w-full md:w-[20%] order-3 border-t md:border-t-0 md:border-l border-white/10 shrink-0 min-h-[300px]"
+          className="flex flex-col min-h-0 w-full md:w-[20%] order-3 border-t md:border-t-0 md:border-l border-white/10 shrink-0 md:shrink"
           style={{
             minWidth: 220,
-            overflow: "hidden",
           }}
         >
           <div className="flex-1 flex flex-col min-h-0" style={{ padding: "12px" }}>

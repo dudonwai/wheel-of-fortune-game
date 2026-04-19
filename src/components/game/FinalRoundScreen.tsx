@@ -11,12 +11,6 @@ interface FinalRoundScreenProps {
 }
 
 const ALL_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-const LETTERS_PER_ROW = 6;
-
-const ROWS: string[][] = [];
-for (let i = 0; i < ALL_LETTERS.length; i += LETTERS_PER_ROW) {
-  ROWS.push(ALL_LETTERS.slice(i, i + LETTERS_PER_ROW));
-}
 
 export function FinalRoundScreen({ gameState, setGameState, onEndGame }: FinalRoundScreenProps) {
   const [solveGuess, setSolveGuess] = useState("");
@@ -215,13 +209,10 @@ export function FinalRoundScreen({ gameState, setGameState, onEndGame }: FinalRo
         key={letter}
         onClick={() => !isDisabled && handleLetterPick(letter)}
         disabled={isDisabled}
-        className="flex items-center justify-center rounded transition-all"
+        className="flex items-center justify-center rounded transition-all text-sm sm:text-base h-10 sm:h-[38px]"
         style={{
-          flex: "1 1 0",
           minWidth: 0,
-          height: 38,
           fontFamily: "Oswald, sans-serif",
-          fontSize: 17,
           fontWeight: 700,
           letterSpacing: "0.04em",
           textTransform: "uppercase",
@@ -411,9 +402,9 @@ export function FinalRoundScreen({ gameState, setGameState, onEndGame }: FinalRo
     <div className="h-screen w-screen flex flex-col" style={{ backgroundColor: "#0A1628", overflow: "hidden" }}>
       {/* Top bar */}
       <div
-        className="w-full flex items-center justify-between shrink-0"
+        className="w-full flex flex-col md:flex-row md:items-center justify-between shrink-0 gap-3 md:gap-0"
         style={{
-          padding: "8px 16px",
+          padding: "12px 16px",
           borderBottom: "1px solid rgba(245, 197, 24, 0.15)",
           backgroundColor: "rgba(10, 22, 40, 0.98)",
         }}
@@ -476,15 +467,12 @@ export function FinalRoundScreen({ gameState, setGameState, onEndGame }: FinalRo
       </div>
 
       {/* Main layout */}
-      <div className="flex-1 flex min-h-0">
+      <div className="flex-1 flex flex-col md:flex-row min-h-0 overflow-y-auto md:overflow-hidden">
         {/* Left panel: Letter picks + controls */}
         <div
-          className="flex flex-col min-h-0"
+          className="flex flex-col min-h-0 w-full md:w-[20%] order-2 md:order-1 border-b md:border-b-0 md:border-r border-white/10 shrink-0 md:shrink"
           style={{
-            width: "20%",
             minWidth: 220,
-            borderRight: "1px solid rgba(255,255,255,0.06)",
-            overflow: "hidden",
           }}
         >
           <div className="flex-1 flex flex-col min-h-0 overflow-y-auto">
@@ -582,16 +570,8 @@ export function FinalRoundScreen({ gameState, setGameState, onEndGame }: FinalRo
 
             {/* Letter board for picking */}
             {finalRound.phase === "picking" && (
-              <div className="flex flex-col gap-1" style={{ padding: "8px 12px 16px" }}>
-                {ROWS.map((row, rowIdx) => (
-                  <div key={rowIdx} className="flex gap-1">
-                    {row.map(renderLetter)}
-                    {row.length < LETTERS_PER_ROW &&
-                      Array.from({ length: LETTERS_PER_ROW - row.length }).map((_, i) => (
-                        <div key={`pad-${i}`} style={{ flex: "1 1 0", minWidth: 0 }} />
-                      ))}
-                  </div>
-                ))}
+              <div className="grid grid-cols-7 sm:grid-cols-6 lg:grid-cols-4 xl:grid-cols-6 gap-1 sm:gap-1.5" style={{ padding: "8px 12px 16px" }}>
+                {ALL_LETTERS.map(renderLetter)}
               </div>
             )}
 
@@ -675,7 +655,7 @@ export function FinalRoundScreen({ gameState, setGameState, onEndGame }: FinalRo
         </div>
 
         {/* Center: Puzzle Board + message */}
-        <div className="flex-1 flex flex-col items-center justify-center" style={{ padding: "24px", minWidth: 0 }}>
+        <div className="flex-1 flex flex-col items-center justify-center order-1 md:order-2 shrink-0 md:shrink overflow-y-auto" style={{ padding: "24px", minWidth: 0 }}>
           {/* Message */}
           <div
             className="text-center mb-8"
@@ -734,11 +714,9 @@ export function FinalRoundScreen({ gameState, setGameState, onEndGame }: FinalRo
 
         {/* Right panel: empty or info */}
         <div
-          className="flex flex-col items-center justify-center"
+          className="flex flex-col items-center justify-center w-full md:w-[20%] order-3 border-t md:border-t-0 md:border-l border-white/10 shrink-0 md:shrink"
           style={{
-            width: "20%",
             minWidth: 220,
-            borderLeft: "1px solid rgba(255,255,255,0.06)",
             padding: 16,
           }}
         >

@@ -130,7 +130,7 @@ export function PuzzleBoard({ phrase, revealedLetters, category, newlyRevealed }
                 const isSpace = char === " ";
 
                 if (isSpace) {
-                  return <div key={globalIdx} style={{ width: 16, height: 36 }} />;
+                  return <div key={globalIdx} className="w-3 sm:w-4 h-7 sm:h-9" />;
                 }
 
                 if (!isLetter) {
@@ -138,14 +138,11 @@ export function PuzzleBoard({ phrase, revealedLetters, category, newlyRevealed }
                   return (
                     <div
                       key={globalIdx}
-                      className="flex items-center justify-center"
+                      className="flex items-center justify-center w-6 h-7 sm:w-8 sm:h-9 text-base sm:text-lg"
                       style={{
-                        width: 32,
-                        height: 36,
                         backgroundColor: "#FFFFFF",
                         borderRadius: 3,
                         fontFamily: "Oswald, sans-serif",
-                        fontSize: 18,
                         fontWeight: 700,
                         color: "#0A1628",
                       }}
@@ -163,15 +160,12 @@ export function PuzzleBoard({ phrase, revealedLetters, category, newlyRevealed }
                 return (
                   <div
                     key={globalIdx}
-                    className="flex items-center justify-center"
+                    className="flex items-center justify-center w-6 h-7 sm:w-8 sm:h-9 text-base sm:text-lg"
                     style={{
-                      width: 32,
-                      height: 36,
                       borderRadius: 3,
                       backgroundColor: isRevealed ? "#FFFFFF" : "#1B6B4A",
                       border: isRevealed ? "none" : "2px solid rgba(255,255,255,0.1)",
                       fontFamily: "Oswald, sans-serif",
-                      fontSize: 18,
                       fontWeight: 700,
                       color: "#0A1628",
                       transform: isFlipping ? "rotateY(180deg)" : "rotateY(0deg)",

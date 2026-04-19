@@ -40,7 +40,7 @@ export function RoundSetup({ roundNumber, onStartRound, onFullReset, players }: 
         fontFamily: "Archivo, sans-serif",
       }}
     >
-      <div className="flex flex-col items-center gap-8" style={{ maxWidth: 560, width: "100%", padding: 32 }}>
+      <div className="flex flex-col items-center gap-6 sm:gap-8 w-full max-w-[560px] px-4 py-8 sm:p-8">
         {/* Round title */}
         <div className="text-center">
           <h2
@@ -192,7 +192,7 @@ export function RoundSetup({ roundNumber, onStartRound, onFullReset, players }: 
             >
               Session Scores
             </div>
-            <div className="flex gap-3">
+            <div className="flex flex-wrap sm:flex-nowrap gap-3">
               {players
                 .slice()
                 .sort((a, b) => b.totalScore - a.totalScore)

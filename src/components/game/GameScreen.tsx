@@ -414,15 +414,13 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
         currentPlayerIndex={gameState.currentPlayerIndex}
       />
 
-      {/* Main 3-column layout */}
-      <div className="flex-1 flex min-h-0">
+      {/* Main layout */}
+      <div className="flex-1 flex flex-col md:flex-row min-h-0 overflow-y-auto md:overflow-hidden">
         {/* Left panel: Scores + Spin button + Host Controls (~20%) */}
         <div
-          className="flex flex-col min-h-0"
+          className="flex flex-col min-h-0 w-full md:w-[20%] order-2 md:order-1 border-b md:border-b-0 md:border-r border-white/10 shrink-0"
           style={{
-            width: "20%",
             minWidth: 220,
-            borderRight: "1px solid rgba(255,255,255,0.06)",
             overflow: "hidden",
           }}
         >
@@ -462,7 +460,7 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
         </div>
 
         {/* Middle: Wheel + Puzzle Board (~60%), 2:1 vertical ratio */}
-        <div className="flex-1 flex flex-col items-center" style={{ padding: "8px 24px", minWidth: 0 }}>
+        <div className="flex-1 flex flex-col items-center order-1 md:order-2 shrink-0 md:shrink" style={{ padding: "16px 24px", minWidth: 0, minHeight: "60vh" }}>
           {/* Wheel — 2/3 of vertical space */}
           <div
             className="flex items-center justify-center"
@@ -490,11 +488,9 @@ export function GameScreen({ gameState, setGameState, onNewGame, onFullReset }: 
 
         {/* Right panel: Event Feed (~20%) */}
         <div
-          className="flex flex-col min-h-0"
+          className="flex flex-col min-h-0 w-full md:w-[20%] order-3 border-t md:border-t-0 md:border-l border-white/10 shrink-0 min-h-[300px]"
           style={{
-            width: "20%",
             minWidth: 220,
-            borderLeft: "1px solid rgba(255,255,255,0.06)",
             overflow: "hidden",
           }}
         >

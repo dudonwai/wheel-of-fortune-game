@@ -35,7 +35,7 @@ export function SetupScreen({ onStartGame }: SetupScreenProps) {
         fontFamily: "Archivo, sans-serif",
       }}
     >
-      <div className="flex flex-col items-center gap-8" style={{ maxWidth: 480, width: "100%", padding: 32 }}>
+      <div className="flex flex-col items-center gap-6 sm:gap-8 w-full max-w-[480px] px-4 py-8 sm:p-8">
         {/* Title */}
         <div className="text-center">
           <h1
@@ -82,7 +82,7 @@ export function SetupScreen({ onStartGame }: SetupScreenProps) {
           >
             Number of Players
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap sm:flex-nowrap gap-2">
             {[2, 3, 4, 5, 6].map(n => (
               <button
                 key={n}

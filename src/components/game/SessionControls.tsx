@@ -34,7 +34,7 @@ export function SessionControls({
   return (
     <>
       <div
-        className="w-full flex items-center justify-between shrink-0"
+        className="w-full flex flex-col md:flex-row md:items-center justify-between shrink-0 gap-3 md:gap-0"
         style={{
           padding: "8px 16px",
           borderBottom: "1px solid rgba(245, 197, 24, 0.15)",
@@ -42,7 +42,7 @@ export function SessionControls({
         }}
       >
         {/* Left: Round indicator + Player scores */}
-        <div className="flex items-center gap-4" style={{ flex: 1, minWidth: 0 }}>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4" style={{ flex: 1, minWidth: 0 }}>
           <div
             style={{
               fontFamily: "Oswald, sans-serif",

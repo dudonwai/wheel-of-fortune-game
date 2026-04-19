@@ -31,7 +31,7 @@ export function RoundEnd({ winner, phrase, players, onNewRound, onEndGame, onFin
         fontFamily: "Archivo, sans-serif",
       }}
     >
-      <div className="flex flex-col items-center gap-8" style={{ maxWidth: 560, width: "100%", padding: 32 }}>
+      <div className="flex flex-col items-center gap-6 sm:gap-8 w-full max-w-[560px] px-4 py-8 sm:p-8">
         {/* Winner announcement */}
         <div className="text-center">
           <h2
@@ -185,7 +185,7 @@ export function RoundEnd({ winner, phrase, players, onNewRound, onEndGame, onFin
         </button>
 
         {/* Buttons */}
-        <div className="w-full flex gap-3">
+        <div className="w-full flex flex-col sm:flex-row gap-3">
           <button
             onClick={onNewRound}
             className="flex-1 py-4 rounded transition-all"
